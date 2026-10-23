@@ -8,3 +8,20 @@ agent/LOG.md
 
 # Company PPT template and other private presentation assets (never commit)
 docs/presentation/private/
+
+# Environment: only the placeholder template is committed
+!.env.example
+
+# Secrets and keys
+*.pem
+*.key
+
+# IdP exports (the checked-in realm file idp/keycloak/realm.json is NOT matched)
+*-export.json
+
+# Logs and build output
+*.log
+node_modules/
+bin/
+obj/
+dist/

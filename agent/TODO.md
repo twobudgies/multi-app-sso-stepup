@@ -5,7 +5,7 @@ Context, decisions and rules live in `BRIEF.md`. `GATE-*` tasks mean: write the 
 Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New tasks go above it.
 
 ## Phase 0: Repo hygiene
-- [ ] P0-1: Add `.gitattributes` (LF for scripts/json/config); extend `.gitignore` (also `docs/presentation/private/` for the company template), add `.env.example`, README stub
+- [x] P0-1: Add `.gitattributes` (LF for scripts/json/config); extend `.gitignore` (also `docs/presentation/private/` for the company template), add `.env.example`, README stub
   - `.gitignore` additionally covers `*.pem`, `*.key`, IdP exports (`*-export.json`, but NOT the checked-in realm file), `*.log`, `node_modules/`, `bin/`, `obj/`, `dist/`
   - `.env.example` with placeholders only; README marked "PoC, not production-hardened"
   - done when: files exist, `git check-ignore` confirms `.env` and `*.pem` are ignored

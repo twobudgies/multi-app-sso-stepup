@@ -1,7 +1,24 @@
 * text=auto
+# Force LF so checkouts on Windows do not break scripts, JSON or config
 *.sh text eol=lf
+*.ps1 text eol=lf
 *.json text eol=lf
 *.yml text eol=lf
 *.yaml text eol=lf
 *.md text eol=lf
+*.cs text eol=lf
+*.csproj text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.html text eol=lf
+*.scss text eol=lf
+*.css text eol=lf
+*.env.example text eol=lf
+.env.example text eol=lf
+Dockerfile text eol=lf
 *.pptx binary
+*.potx binary
+*.png binary
+*.jpg binary
+*.gif binary
+*.mp4 binary
