@@ -2,8 +2,12 @@
 [extend]
 useDefault = true
 
-[allowlist]
+[[allowlists]]
 description = "Placeholder values in .env.example only"
 condition = "AND"
 paths = ['''\.env\.example$''']
 regexes = ['''change-me-dev-only''']
+
+[[allowlists]]
+description = "Public fake TOTP demo seed (RFC 6238 test vector), dev-only"
+regexes = ['''12345678901234567890''', '''GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ''']
