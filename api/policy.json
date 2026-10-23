@@ -1,0 +1,9 @@
+{
+  "actions": {
+    "change-email":     { "app": "customer-portal", "title": "Change e-mail address", "level": "LoA2", "maxAgeSeconds": "default" },
+    "add-payee":        { "app": "payments",        "title": "Add payee",            "level": "LoA2", "maxAgeSeconds": "default" },
+    "transfer":         { "app": "payments",        "title": "Send money",           "level": "LoA2", "maxAgeSeconds": "default", "onlyAboveAmount": 1000 },
+    "change-limit":     { "app": "back-office",     "title": "Change transfer limit","level": "LoA2", "maxAgeSeconds": "default" },
+    "approve-transfer": { "app": "back-office",     "title": "Approve transfer",     "level": "LoA2", "maxAgeSeconds": "default" }
+  }
+}
