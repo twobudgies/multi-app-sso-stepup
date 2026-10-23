@@ -21,20 +21,64 @@ Configuration: copy `.env.example` to `.env` (git-ignored) and edit. The example
 | `docs/` | ALL documentation (index: `docs/README.md`, history: `docs/progress-log.md`) | - | yes |
 | `agent/` | Task-runner agent files | - | yes |
 
-## Run the demo (macOS and Windows)
+## How to run it (macOS and Windows)
 
-Needs Docker Desktop, .NET SDK 10 and Node.js 20+. From the repo root:
+### 1. Prerequisites
+- Docker Desktop (running)
+- .NET SDK 10
+- Node.js 20 or newer (includes `npm`)
+- Free ports: 8180 (Keycloak), 5100 (API), 5200 (Back Office), 5300 (Customer Portal), 5400 (Payments)
+- An authenticator app on your phone (Google Authenticator, Microsoft Authenticator and so on). Phone and laptop clocks must be on automatic time, or codes are rejected.
 
+Windows notes: [docs/windows-setup.md](docs/windows-setup.md) (written, not yet run on Windows).
+
+### 2. One-time setup
 ```text
-npm run install:all     # once: installs the React and Angular dependencies
-npm run up              # Keycloak in Docker (wait ~30 s)
-npm run dev:api         # terminal 2, port 5100
-npm run dev:react       # terminal 3, port 5300
-npm run dev:angular     # terminal 4, port 5400
-npm run dev:mvc         # terminal 5, port 5200
+cp .env.example .env     # Windows PowerShell: Copy-Item .env.example .env
+npm run install:all      # installs the React and Angular dependencies
 ```
+The values in `.env.example` are fake, dev-only placeholders and work as they are.
 
-Open http://localhost:5300 and sign in as `alice` / `alice-dev-only`. Authenticator code: add the Base32 secret from `docs/idp-keycloak.md` to a phone app. Reset the IdP with `npm run reset`. Full checklist: `docs/manual-checks.md`.
+### 3. Start everything
+Use the repo root. Each `dev:` command keeps running, so give each its own terminal.
+
+| Terminal | Command | What starts | Address |
+|---|---|---|---|
+| 1 | `npm run up` | Keycloak (login server) in Docker. Wait about 30 s. | http://localhost:8180 |
+| 2 | `npm run dev:api` | Shared API | http://localhost:5100 |
+| 3 | `npm run dev:react` | Customer Portal | http://localhost:5300 |
+| 4 | `npm run dev:angular` | Payments and Transfers | http://localhost:5400 |
+| 5 | `npm run dev:mvc` | Back Office | http://localhost:5200 |
+
+Quick health check: http://localhost:5100/health should answer, and http://localhost:8180/realms/stepup/.well-known/openid-configuration should return JSON.
+
+### 4. Try it
+1. Open http://localhost:5300 in a **private/incognito window**.
+2. Sign in as `alice` / `alice-dev-only` (password only, level LoA1).
+3. Add the authenticator secret once: Base32 `GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ` (6 digits, 30 s, SHA-1). It is a public fake demo seed, see [docs/idp-keycloak.md](docs/idp-keycloak.md).
+4. Do a sensitive action (for example change the e-mail on the Profile page). A "step-up required" pop-up appears; enter the current 6-digit code.
+5. Use the top navigation to open the other two apps. They open without a login prompt (SSO).
+6. Watch the session panel: the countdown shows the 1-minute step-up window. When it runs out, the next sensitive action asks for a code again.
+
+Two surprises: the window is really up to 65 s (5 s clock leeway), and Keycloak rejects a code it already accepted, so wait for the next code (up to 30 s) before a second step-up.
+
+### 5. Stop, reset, troubleshoot
+| Need | Do |
+|---|---|
+| Stop the apps | Ctrl+C in each terminal |
+| Stop Keycloak | `npm run down` |
+| Clean Keycloak (wipe its state) | `npm run reset`, then wait about 30 s |
+| Reset the fake bank data | Restart `npm run dev:api` |
+| "Port already in use" | Stop whatever uses it, or change the port in `.env` |
+| Valid-looking code rejected | Fix the clocks (automatic time), or wait for the next code |
+| Stuck old session | Use a fresh private window, or `npm run reset` |
+
+### 6. Extra checks
+- `npm run idp-check`: compares an identity provider's discovery document with a profile.
+- `npm run check:evaluator`: runs the step-up evaluator against synthetic claims.
+- `npm run probe`: headless login against live Keycloak.
+- Headless end-to-end run: `cd tools/e2e && npm install && npm run setup && npm run run` (needs the stack above running).
+- Full live-demo script with backup screenshots: [demo/run-demo.md](demo/run-demo.md). Manual verification steps and evidence: [docs/manual-checks.md](docs/manual-checks.md).
 
 ## Architecture in one picture
 
