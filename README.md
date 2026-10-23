@@ -4,6 +4,10 @@ Proof of concept: SSO across two apps with an external IdP, plus step-up MFA re-
 
 > Status: early work in progress.
 
+## Documentation
+
+Start at [`docs/README.md`](docs/README.md): architecture and IdP communication, token refresh, and the step-up actions.
+
 ## Development with the task-runner agent
 
 This repo includes a resumable Claude Code agent that executes a to-do list and
