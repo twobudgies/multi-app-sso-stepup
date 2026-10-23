@@ -37,7 +37,7 @@ Keep `T-FINAL` last. New tasks go above it.
 - [ ] GATE-P2: Phase 2 report, then stop
 
 ## Phase 3: Step-up MFA
-- [ ] P3-1: Policy per sensitive action (required `acr`, max age, e.g. LoA2 and 5 min) in one config file the API reads
+- [ ] P3-1: Policy per sensitive action (start from the proposed table in `docs/step-up-actions.md`; confirm the actions and times with the owner) (required `acr`, max age, e.g. LoA2 and 5 min) in one config file the API reads
 - [ ] P3-2: API enforcement from validated `acr`/`auth_time`; on failure return the RFC 9470 `401` challenge and do NOT perform the action
 - [ ] P3-3: Clients handle the challenge: new authorization request with `acr_values`, `max_age`, `prompt=login` where needed; originating action and return URL kept server-side (MVC session) or in memory keyed by `state` (SPAs); return URL allow-listed, no open redirect
 - [ ] P3-4: On return, re-validate the new token and let the API re-check `acr`/`auth_time` before the action resumes (never assume the IdP honored the request)
@@ -57,7 +57,7 @@ Keep `T-FINAL` last. New tasks go above it.
 - [ ] GATE-P5: Phase 5 report, then stop
 
 ## Phase 6: Docs and pre-publish
-- [ ] P6-1: README: architecture diagram, SSO flow, step-up sequence diagram, claims relied on, known limitations, how to run
+- [ ] P6-1: Reconcile `docs/architecture.md`, `docs/token-lifecycle.md`, `docs/step-up-actions.md` (written as design before the code existed) with the real code and lifetimes; fix anything that differs and remove their "design" status banner. README: architecture diagram, SSO flow, step-up sequence diagram, claims relied on, known limitations, how to run
 - [ ] P6-2: ADRs in `docs/decisions/`: PKCE code flow, server-side enforcement (API), freshness policy (shared), SPA tokens in memory vs BFF
 - [ ] P6-3: Pre-publish checklist doc: full-history `gitleaks` + `trufflehog`, then flip visibility OR publish a fresh squashed repo (owner prefers a fresh repo)
 - [ ] GATE-P6: Phase 6 report, then stop
