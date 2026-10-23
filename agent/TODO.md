@@ -26,6 +26,11 @@ Keep `T-FINAL` last. New tasks go above it.
 - [ ] GATE-P1: Phase 1 report, then stop
 
 ## Phase 2: SSO for three clients and a shared API
+- [ ] P2-0: IdP adapter foundation (before any app code), per `docs/idp-adapter.md`
+  - define the profile JSON schema and `idp/profiles/keycloak.json` + `generic.json`; env vars `IDP_PROFILE`, `IDP_ISSUER` in `.env.example`
+  - profile loader with fail-fast validation (TypeScript for SPAs, C# for API/MVC, same profile file)
+  - request builder and evaluator interfaces; no app code may name Keycloak
+  - done when: swapping `IDP_PROFILE` is the only change needed to select a profile; schema documented
 - [ ] P2-1: Scaffold `apps/react`, `apps/angular`, `apps/mvc`, `api/` (ASP.NET Core); minimal home, profile, one sensitive action each
   - first confirm the shared-API architecture in `BRIEF.md` with the owner; if not confirmed, mark `[!]`
 - [ ] P2-2: API: JWT bearer validation (JWKS with caching/rotation, `iss`, `aud`, `exp`); `GET /me`, `POST /sensitive/{app}` (no policy yet)
@@ -38,8 +43,8 @@ Keep `T-FINAL` last. New tasks go above it.
 
 ## Phase 3: Step-up MFA
 - [ ] P3-1: Policy per sensitive action (start from the proposed table in `docs/step-up-actions.md`; confirm the actions and times with the owner) (required `acr`, max age, e.g. LoA2 and 5 min) in one config file the API reads
-- [ ] P3-2: API enforcement from validated `acr`/`auth_time`; on failure return the RFC 9470 `401` challenge and do NOT perform the action
-- [ ] P3-3: Clients handle the challenge: new authorization request with `acr_values`, `max_age`, `prompt=login` where needed; originating action and return URL kept server-side (MVC session) or in memory keyed by `state` (SPAs); return URL allow-listed, no open redirect
+- [ ] P3-2: API enforcement via the adapter evaluator (level + auth time from the profile, not hard-coded `acr`/`auth_time`); on failure return the RFC 9470 `401` challenge and do NOT perform the action
+- [ ] P3-3: Clients (via the adapter request builder) handle the challenge: new authorization request with `acr_values`, `max_age`, `prompt=login` where needed; originating action and return URL kept server-side (MVC session) or in memory keyed by `state` (SPAs); return URL allow-listed, no open redirect
 - [ ] P3-4: On return, re-validate the new token and let the API re-check `acr`/`auth_time` before the action resumes (never assume the IdP honored the request)
 - [ ] P3-5: Failure paths: user cancels MFA, IdP ignores `acr_values`, token `acr` lower than requested, clock skew
 - [ ] P3-6: Document shared-freshness behavior explicitly (MFA in one client satisfies the others inside the window)
@@ -50,10 +55,12 @@ Keep `T-FINAL` last. New tasks go above it.
 - [ ] P4-2: Self-review every item against the code; fix or log gaps. Report which items were only read and which were actually run
 - [ ] GATE-P4: Phase 4 report, then stop
 
-## Phase 5: IdP portability (only after Phase 3 works)
-- [ ] P5-1: Isolate IdP differences (acr names, claim names, how step-up is requested) in a config/adapter layer
-- [ ] P5-2: Entra ID / Okta profile as documentation + config template only; no tenant, so untested
-- [ ] P5-3: README states exactly which IdPs were tested (Keycloak only); no "works with any IdP" claim
+## Phase 5: More IdP profiles and tooling (adapter foundation was built in P2-0)
+- [ ] P5-1: `tools/idp-check` capability probe (discovery vs profile expectations, flags mismatches)
+- [ ] P5-2: Profile templates for Entra ID (authentication context + claims challenge), Okta, Amazon Cognito (confirm Cognito vs IAM Identity Center with the owner first); verify every claim and parameter name against the provider's current documentation and cite the doc URL in the profile comments
+- [ ] P5-3: Handle IdPs without `auth_time` or without `acr_values` support per the "freshness problem" section; reject unsafe profiles at startup
+- [ ] P5-4: Extend `docs/idp-adapter.md` with a "how to add an IdP" walkthrough validated against the generic profile
+- [ ] P5-5: README states exactly which IdPs were tested (Keycloak only unless the owner provides a tenant); templates are labelled untested
 - [ ] GATE-P5: Phase 5 report, then stop
 
 ## Phase 6: Docs and pre-publish
