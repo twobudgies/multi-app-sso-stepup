@@ -5,7 +5,7 @@ Context, decisions and rules live in `BRIEF.md`. `GATE-*` tasks mean: write the 
 Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New tasks go above it.
 
 ## Phase 0: Repo hygiene
-- [ ] P0-1: Extend `.gitignore`, add `.env.example`, README stub
+- [ ] P0-1: Add `.gitattributes` (LF for scripts/json/config); extend `.gitignore` (also `docs/presentation/private/` for the company template), add `.env.example`, README stub
   - `.gitignore` additionally covers `*.pem`, `*.key`, IdP exports (`*-export.json`, but NOT the checked-in realm file), `*.log`, `node_modules/`, `bin/`, `obj/`, `dist/`
   - `.env.example` with placeholders only; README marked "PoC, not production-hardened"
   - done when: files exist, `git check-ignore` confirms `.env` and `*.pem` are ignored
@@ -13,6 +13,7 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
   - `.pre-commit-config.yaml` with gitleaks; `.github/workflows/gitleaks.yml` running `gitleaks detect` over full history (`fetch-depth: 0`)
   - done when: if gitleaks is installed locally, a fake secret in a temp file is rejected by `gitleaks protect --staged`; otherwise say it was not run
 - [ ] P0-3: Update `SECURITY.md` on how test credentials are handled (fake dev-only values, documented, allowlisted)
+- [ ] P0-4: `docs/windows-setup.md` for the Windows demo laptop (Docker Desktop + WSL2, .NET SDK, Node, free ports, clock sync, git line endings); mark steps only reviewed, not run, since dev is on macOS
 - [ ] GATE-P0: Phase 0 report, then stop
 
 ## Phase 1: Keycloak IdP (reproducible)
@@ -32,7 +33,7 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
   - request builder and evaluator interfaces; no app code may name Keycloak
   - done when: swapping `IDP_PROFILE` is the only change needed to select a profile; schema documented
 - [ ] P2-1: Scaffold `apps/react`, `apps/angular`, `apps/mvc`, `api/` (ASP.NET Core); minimal home, profile, one sensitive action each
-  - first confirm the shared-API architecture in `BRIEF.md` with the owner; if not confirmed, mark `[!]`
+  - shared-API architecture is confirmed by the owner
 - [ ] P2-2: API: JWT bearer validation (JWKS with caching/rotation, `iss`, `aud`, `exp`); `GET /me`, `POST /sensitive/{app}` (no policy yet)
 - [ ] P2-3: MVC: Authorization Code + PKCE, `state` and `nonce` verified, server-side session, cookie flags, dev-mode exception documented
 - [ ] P2-4: React: Authorization Code + PKCE (`oidc-client-ts`), in-memory token storage, `state`/`nonce` verified
@@ -42,7 +43,7 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
 - [ ] GATE-P2: Phase 2 report, then stop
 
 ## Phase 3: Step-up MFA
-- [ ] P3-1: Policy per sensitive action (start from the proposed table in `docs/step-up-actions.md`; confirm the actions and times with the owner) (required `acr`, max age, e.g. LoA2 and 5 min) in one config file the API reads
+- [ ] P3-1: Policy per sensitive action (use the table in `docs/step-up-actions.md`; owner confirmed the actions and set **1 minute for all**; read the value from config/env `STEPUP_MAX_AGE_SECONDS`, default 60; use a small clock-skew leeway such as 5 s because the window is short) (required `acr`, max age, e.g. LoA2 and 5 min) in one config file the API reads
 - [ ] P3-2: API enforcement via the adapter evaluator (level + auth time from the profile, not hard-coded `acr`/`auth_time`); on failure return the RFC 9470 `401` challenge and do NOT perform the action
 - [ ] P3-3: Clients (via the adapter request builder) handle the challenge: new authorization request with `acr_values`, `max_age`, `prompt=login` where needed; originating action and return URL kept server-side (MVC session) or in memory keyed by `state` (SPAs); return URL allow-listed, no open redirect
 - [ ] P3-4: On return, re-validate the new token and let the API re-check `acr`/`auth_time` before the action resumes (never assume the IdP honored the request)
@@ -57,7 +58,7 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
 
 ## Phase 5: More IdP profiles and tooling (adapter foundation was built in P2-0)
 - [ ] P5-1: `tools/idp-check` capability probe (discovery vs profile expectations, flags mismatches)
-- [ ] P5-2: Profile templates for Entra ID (authentication context + claims challenge), Okta, Amazon Cognito (confirm Cognito vs IAM Identity Center with the owner first); verify every claim and parameter name against the provider's current documentation and cite the doc URL in the profile comments
+- [ ] P5-2: Profile templates for Entra ID (authentication context + claims challenge), Okta, Amazon Cognito (owner confirmed Cognito); verify every claim and parameter name against the provider's current documentation and cite the doc URL in the profile comments
 - [ ] P5-3: Handle IdPs without `auth_time` or without `acr_values` support per the "freshness problem" section; reject unsafe profiles at startup
 - [ ] P5-4: Extend `docs/idp-adapter.md` with a "how to add an IdP" walkthrough validated against the generic profile
 - [ ] P5-5: README states exactly which IdPs were tested (Keycloak only unless the owner provides a tenant); templates are labelled untested
@@ -70,10 +71,10 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
 - [ ] GATE-P6: Phase 6 report, then stop
 
 ## Phase 7: Presentation for the office team (after everything else is done)
-- [ ] P7-0: Presentation requirements (owner answered 2026-10-23): audience **mixed** (developers + managers), **45 min** total, **live demo** included. Still open: company template/branding. Ask once; if none, use a clean neutral design
+- [ ] P7-0: Presentation requirements (owner answered 2026-10-23): audience **mixed** (developers + managers), **45 min** total, **live demo** included. Owner has a company PPT template: ask them to place it in the git-ignored `docs/presentation/private/` folder (never commit it)
   - Time plan: ~5 min problem + SSO basics, ~8 min architecture/tokens/step-up concepts, **~12 min live demo**, ~5 min IdP flexibility, ~5 min security/trade-offs/what was verified, ~10 min Q&A and buffer
   - Mixed audience: each technical slide has a one-line plain-language takeaway for managers; deep detail goes to the appendix, not the main flow
-  - Live demo needs a safety net: `demo/run-demo.md` with exact steps, a reset script to restore the clean state (`docker compose down -v && up`), a pre-demo checklist (ports, TOTP app or documented test code, clock sync), and **backup screenshots or a short screen recording** of every demo step in case it fails live
+  - Live demo needs a safety net: `demo/run-demo.md` with exact steps, a reset command that restores the clean state (`docker compose down -v` then `up`), runnable on Windows too; demo tested on Windows if the owner can run it, else clearly marked untested, a pre-demo checklist (ports, TOTP app or documented test code, clock sync), and **backup screenshots or a short screen recording** of every demo step in case it fails live
 - [ ] P7-1: Write `docs/presentation/outline.md`: story arc, one message per slide, speaker notes. Suggested arc: the problem (many logins, risky actions) -> SSO explained simply -> architecture (IdP, 3 apps, shared API) -> token journey and refresh -> step-up MFA with a live-style walkthrough -> IdP-agnostic adapter (Keycloak tested; Entra/Okta/Cognito as templates) -> security decisions and trade-offs (PKCE, API-side enforcement, tokens in memory vs BFF) -> what was verified vs only reviewed -> limitations and next steps -> Q&A
 - [ ] P7-2: Build the deck as a `.pptx` (use the pptx skill): about 16-18 main slides (fits 45 min with a 12-min live demo) plus appendix, clean visual design, diagrams reused from `docs/` (redrawn for slides), speaker notes on every slide, a demo-script slide with exact steps, an appendix with glossary and FAQ
   - content must come from the real, finished code and docs; no invented results, metrics or claims about untested IdPs
