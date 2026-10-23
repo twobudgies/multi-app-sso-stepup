@@ -2,7 +2,7 @@
 
 Markers: `[ ]` pending · `[~]` in progress · `[x]` done · `[!]` blocked
 Context, decisions and rules live in `BRIEF.md`. `GATE-*` tasks mean: write the phase report, mark done, END THE RUN.
-Keep `T-FINAL` last. New tasks go above it.
+Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New tasks go above it.
 
 ## Phase 0: Repo hygiene
 - [ ] P0-1: Extend `.gitignore`, add `.env.example`, README stub
@@ -68,6 +68,17 @@ Keep `T-FINAL` last. New tasks go above it.
 - [ ] P6-2: ADRs in `docs/decisions/`: PKCE code flow, server-side enforcement (API), freshness policy (shared), SPA tokens in memory vs BFF
 - [ ] P6-3: Pre-publish checklist doc: full-history `gitleaks` + `trufflehog`, then flip visibility OR publish a fresh squashed repo (owner prefers a fresh repo)
 - [ ] GATE-P6: Phase 6 report, then stop
+
+## Phase 7: Presentation for the office team (after everything else is done)
+- [ ] P7-0: Ask the owner 4 quick questions before building: audience (developers, managers, mixed), length (e.g. 15/30/45 min), live demo or screenshots, any company template/branding. Mark `[!]` until answered
+- [ ] P7-1: Write `docs/presentation/outline.md`: story arc, one message per slide, speaker notes. Suggested arc: the problem (many logins, risky actions) -> SSO explained simply -> architecture (IdP, 3 apps, shared API) -> token journey and refresh -> step-up MFA with a live-style walkthrough -> IdP-agnostic adapter (Keycloak tested; Entra/Okta/Cognito as templates) -> security decisions and trade-offs (PKCE, API-side enforcement, tokens in memory vs BFF) -> what was verified vs only reviewed -> limitations and next steps -> Q&A
+- [ ] P7-2: Build the deck as a `.pptx` (use the pptx skill): 15-20 slides, clean visual design, diagrams reused from `docs/` (redrawn for slides), speaker notes on every slide, a demo-script slide with exact steps, an appendix with glossary and FAQ
+  - content must come from the real, finished code and docs; no invented results, metrics or claims about untested IdPs
+  - no real secrets, tenant IDs or IdP URLs on any slide
+  - commit the deck under `docs/presentation/`
+- [ ] P7-3: Render the slides to images and check them visually (overflow, readability, contrast); fix issues; report any slide that could not be checked
+- [ ] P7-4: Write a one-page rehearsal guide: timing per slide, the 10 questions the team is most likely to ask with short answers
+- [ ] GATE-P7: Phase 7 report, then stop
 
 <!-- Keep this task LAST. New tasks go above it. -->
 - [ ] T-FINAL: REMIND THE USER to make this repo public (currently private)
