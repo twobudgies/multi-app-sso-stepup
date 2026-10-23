@@ -85,21 +85,22 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
 - [x] GATE-P6: Phase 6 report, then stop
 
 ## Phase 7: Presentation for the office team (after everything else is done)
-- [ ] P7-0: Presentation requirements (owner answered 2026-10-23): audience **mixed** (developers + managers), **45 min** total, **live demo** included. Owner has a company PPT template: ask them to place it in the git-ignored `docs/presentation/private/` folder (never commit it)
+- [x] P7-0: Presentation requirements (owner answered 2026-10-23): audience **mixed** (developers + managers), **45 min** total, **live demo** included. Owner has a company PPT template: ask them to place it in the git-ignored `docs/presentation/private/` folder (never commit it)
   - Time plan: ~5 min problem + SSO basics, ~8 min architecture/tokens/step-up concepts, **~12 min live demo**, ~5 min IdP flexibility, ~5 min security/trade-offs/what was verified, ~10 min Q&A and buffer
   - Mixed audience: each technical slide has a one-line plain-language takeaway for managers; deep detail goes to the appendix, not the main flow
   - Live demo needs a safety net: `demo/run-demo.md` with exact steps, a reset command that restores the clean state (`docker compose down -v` then `up`), runnable on Windows too; demo tested on Windows if the owner can run it, else clearly marked untested, a pre-demo checklist (ports, TOTP app or documented test code, clock sync), and **backup screenshots or a short screen recording** of every demo step in case it fails live
-- [ ] P7-1: Write `docs/presentation/outline.md`: story arc, one message per slide, speaker notes. Suggested arc: the problem (many logins, risky actions) -> SSO explained simply -> architecture (IdP, 3 apps, shared API) -> token journey and refresh -> step-up MFA with a live-style walkthrough -> IdP-agnostic adapter (Keycloak tested; Entra/Okta/Cognito as templates) -> security decisions and trade-offs (PKCE, API-side enforcement, tokens in memory vs BFF) -> what was verified vs only reviewed -> limitations and next steps -> Q&A
-- [ ] P7-2: Build the deck as a `.pptx` (use the pptx skill): about 16-18 main slides (fits 45 min with a 12-min live demo) plus appendix, clean visual design, diagrams reused from `docs/` (redrawn for slides), speaker notes on every slide, a demo-script slide with exact steps, an appendix with glossary and FAQ
+- [x] P7-1: Write `docs/presentation/outline.md`: story arc, one message per slide, speaker notes. Suggested arc: the problem (many logins, risky actions) -> SSO explained simply -> architecture (IdP, 3 apps, shared API) -> token journey and refresh -> step-up MFA with a live-style walkthrough -> IdP-agnostic adapter (Keycloak tested; Entra/Okta/Cognito as templates) -> security decisions and trade-offs (PKCE, API-side enforcement, tokens in memory vs BFF) -> what was verified vs only reviewed -> limitations and next steps -> Q&A
+- [x] P7-2: Build the deck as a `.pptx` (use the pptx skill): about 16-18 main slides (fits 45 min with a 12-min live demo) plus appendix, clean visual design, diagrams reused from `docs/` (redrawn for slides), speaker notes on every slide, a demo-script slide with exact steps, an appendix with glossary and FAQ
   - content must come from the real, finished code and docs; no invented results, metrics or claims about untested IdPs
   - no real secrets, tenant IDs or IdP URLs on any slide
   - commit the deck under `docs/presentation/`
-- [ ] P7-3: Render the slides to images and check them visually (overflow, readability, contrast); fix issues; report any slide that could not be checked
-- [ ] P7-4: Write a one-page rehearsal guide: timing per slide, the 10 questions the team is most likely to ask with short answers
-- [ ] GATE-P7: Phase 7 report, then stop
+- [x] P7-3: Render the slides to images and check them visually (overflow, readability, contrast); fix issues; report any slide that could not be checked
+- [x] P7-4: Write a one-page rehearsal guide: timing per slide, the 10 questions the team is most likely to ask with short answers
+- [x] GATE-P7: Phase 7 report, then stop
 
 <!-- Keep this task LAST. New tasks go above it. -->
-- [ ] T-FINAL: REMIND THE USER to make this repo public (currently private)
+- [!] T-FINAL: REMIND THE USER to make this repo public (currently private)
+  - blocked: waiting for user (visibility is the owner's action; reminder delivered in the final report and docs/pre-publish-checklist.md)
   - Do NOT change the visibility or create a new repo yourself. Only tell the user, then mark this `[!]` with `blocked: waiting for user`.
   - Pre-flight checklist to show them: no secrets in code or git history (gitleaks + trufflehog, full history), LICENSE name correct, SECURITY.md contact filled in, private vulnerability reporting enabled, git author email OK to be public, README up to date.
   - Owner prefers a fresh squashed repo. If flipping instead: `gh repo edit twobudgies/multi-app-sso-stepup --visibility public --accept-visibility-change-consequences`

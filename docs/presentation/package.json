@@ -1,0 +1,1 @@
+{ "name": "deck-builder", "private": true, "type": "module", "scripts": { "build": "node build-deck.mjs" }, "dependencies": { "pptxgenjs": "^3.12.0" } }
