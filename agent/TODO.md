@@ -37,7 +37,7 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
   - done when: swapping `IDP_PROFILE` is the only change needed to select a profile; schema documented
 - [ ] P2-1: Scaffold `apps/react`, `apps/angular`, `apps/mvc`, `api/` (ASP.NET Core); minimal home, profile, one sensitive action each
   - shared-API architecture is confirmed by the owner
-- [ ] P2-1a: Shared demo domain and design: fictional "Acme Bank" (no real brands or logos), fake data only. `apps/react` = Customer Portal (accounts, balances, profile), `apps/angular` = Payments and Transfers (send money, add payee), `apps/mvc` = Back Office / Admin (limits, approvals, user management)
+- [x] P2-1a: Shared demo domain and design: fictional "Acme Bank" (no real brands or logos), fake data only. `apps/react` = Customer Portal (accounts, balances, profile), `apps/angular` = Payments and Transfers (send money, add payee), `apps/mvc` = Back Office / Admin (limits, approvals, user management)
   - shared look: same palette, header and a nav bar linking across all three apps (visible SSO: click through with no login prompt); shared CSS tokens in one place (e.g. `shared/acme.css`) used by all three
   - "session panel" on every page: app name, user, `acr` level, `auth_time`, and a countdown for the 1-minute step-up window (values read from validated token data via the adapter, not hard-coded)
   - sensitive actions map to the table in `docs/step-up-actions.md` (e.g. transfer over a limit, add payee, change limits, approve); update that doc if names differ

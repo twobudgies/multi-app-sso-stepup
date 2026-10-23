@@ -1,0 +1,95 @@
+/* Acme Bank shared look (fictional bank, fake data). Used by React, Angular and MVC. */
+:root {
+  --ab-ink: #0f1b33;
+  --ab-ink-soft: #52607a;
+  --ab-bg: #f3f6fb;
+  --ab-card: #ffffff;
+  --ab-line: #dde4ef;
+  --ab-brand: #12307a;
+  --ab-brand-2: #1f56d6;
+  --ab-accent: #0fb59a;
+  --ab-warn: #f59e0b;
+  --ab-danger: #d93a4a;
+  --ab-ok: #15a56a;
+  --ab-radius: 16px;
+  --ab-shadow: 0 6px 24px rgba(15, 27, 51, .08);
+  font-size: 20px; /* big text for projectors */
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; color: var(--ab-ink); background: var(--ab-bg); line-height: 1.45; }
+h1 { font-size: 1.9rem; margin: 0 0 .25rem; }
+h2 { font-size: 1.35rem; margin: 0 0 .6rem; }
+p.lead { color: var(--ab-ink-soft); margin: 0 0 1.2rem; }
+a { color: var(--ab-brand-2); }
+
+/* ---- header + cross-app nav ---- */
+.ab-header { background: linear-gradient(100deg, var(--ab-brand), var(--ab-brand-2)); color: #fff; display: flex; align-items: center; gap: 1.5rem; padding: .7rem 1.5rem; flex-wrap: wrap; }
+.ab-brand { font-weight: 800; font-size: 1.35rem; letter-spacing: .02em; display: flex; align-items: center; gap: .5rem; }
+.ab-logo { width: 32px; height: 32px; border-radius: 9px; background: #fff; color: var(--ab-brand); display: grid; place-items: center; font-weight: 900; }
+.ab-nav { display: flex; gap: .4rem; flex: 1; flex-wrap: wrap; }
+.ab-nav a { color: #dce6ff; text-decoration: none; padding: .45rem .9rem; border-radius: 999px; font-weight: 600; transition: background .2s, color .2s; }
+.ab-nav a:hover { background: rgba(255, 255, 255, .16); color: #fff; }
+.ab-nav a.active { background: #fff; color: var(--ab-brand); }
+.ab-header .ab-btn { background: rgba(255, 255, 255, .15); color: #fff; border-color: transparent; }
+
+/* ---- session panel ---- */
+.ab-session { background: #0f1b33; color: #cfd8ee; display: flex; gap: 1.6rem; padding: .6rem 1.5rem; flex-wrap: wrap; align-items: center; font-size: .85rem; position: sticky; top: 0; z-index: 20; }
+.ab-session .k { display: block; font-size: .65rem; text-transform: uppercase; letter-spacing: .09em; color: #8d9bbd; }
+.ab-session .v { font-weight: 700; color: #fff; font-size: .95rem; }
+.ab-badge { display: inline-block; padding: .05rem .6rem; border-radius: 999px; font-weight: 800; font-size: .8rem; }
+.ab-badge.loa1 { background: #3a4a70; color: #fff; }
+.ab-badge.loa2 { background: var(--ab-accent); color: #04271f; }
+.ab-countdown { min-width: 210px; }
+.ab-countdown .bar { height: 8px; background: #25355c; border-radius: 99px; overflow: hidden; margin-top: .25rem; }
+.ab-countdown .bar i { display: block; height: 100%; background: var(--ab-accent); transition: width 1s linear, background .3s; }
+.ab-countdown.low .bar i { background: var(--ab-warn); }
+.ab-countdown.off .bar i { width: 0 !important; }
+
+/* ---- layout ---- */
+.ab-main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; animation: ab-in .35s ease; }
+.ab-grid { display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.ab-card { background: var(--ab-card); border: 1px solid var(--ab-line); border-radius: var(--ab-radius); padding: 1.2rem 1.3rem; box-shadow: var(--ab-shadow); transition: transform .2s, box-shadow .2s; }
+.ab-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(15, 27, 51, .12); }
+.ab-card .tag { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--ab-ink-soft); }
+.ab-amount { font-size: 2.1rem; font-weight: 800; margin: .15rem 0; }
+.ab-sensitive-tag { display: inline-block; font-size: .7rem; font-weight: 800; background: #fff3d6; color: #8a5a00; border-radius: 6px; padding: .05rem .45rem; margin-left: .4rem; vertical-align: middle; }
+
+/* ---- controls ---- */
+.ab-btn { font: inherit; font-weight: 700; border: 2px solid var(--ab-brand-2); background: transparent; color: var(--ab-brand-2); padding: .55rem 1.1rem; border-radius: 12px; cursor: pointer; transition: transform .1s, background .2s, color .2s, opacity .2s; }
+.ab-btn:hover { background: var(--ab-brand-2); color: #fff; }
+.ab-btn:active { transform: scale(.97); }
+.ab-btn.primary { background: var(--ab-brand-2); color: #fff; }
+.ab-btn.primary:hover { background: var(--ab-brand); }
+.ab-btn.warn { background: var(--ab-warn); border-color: var(--ab-warn); color: #231600; }
+.ab-btn[disabled] { opacity: .55; cursor: wait; }
+.ab-field { display: block; margin: .7rem 0; font-weight: 600; font-size: .85rem; color: var(--ab-ink-soft); }
+.ab-field input, .ab-field select { display: block; width: 100%; font: inherit; margin-top: .25rem; padding: .55rem .75rem; border: 2px solid var(--ab-line); border-radius: 10px; background: #fff; color: var(--ab-ink); transition: border-color .2s; }
+.ab-field input:focus, .ab-field select:focus { outline: none; border-color: var(--ab-brand-2); }
+.ab-table { width: 100%; border-collapse: collapse; }
+.ab-table th { text-align: left; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--ab-ink-soft); }
+.ab-table th, .ab-table td { padding: .6rem .4rem; border-bottom: 1px solid var(--ab-line); }
+.ab-status { font-weight: 700; padding: .05rem .55rem; border-radius: 99px; font-size: .75rem; }
+.ab-status.pending { background: #fff3d6; color: #8a5a00; }
+.ab-status.approved, .ab-status.sent { background: #d9f5e8; color: #0b6b43; }
+
+/* ---- states: spinner, toast, modal ---- */
+.ab-spinner { width: 22px; height: 22px; border: 3px solid var(--ab-line); border-top-color: var(--ab-brand-2); border-radius: 50%; animation: ab-spin .8s linear infinite; display: inline-block; vertical-align: middle; }
+.ab-center { display: grid; place-items: center; min-height: 50vh; text-align: center; gap: 1rem; }
+.ab-toasts { position: fixed; right: 1.2rem; bottom: 1.2rem; display: grid; gap: .6rem; z-index: 60; max-width: 440px; }
+.ab-toast { padding: .8rem 1.1rem; border-radius: 12px; color: #fff; font-weight: 600; box-shadow: var(--ab-shadow); animation: ab-slide .3s ease; }
+.ab-toast.ok { background: var(--ab-ok); } .ab-toast.err { background: var(--ab-danger); } .ab-toast.info { background: var(--ab-brand); }
+.ab-modal-backdrop { position: fixed; inset: 0; background: rgba(8, 14, 30, .6); display: grid; place-items: center; z-index: 50; animation: ab-fade .2s ease; padding: 1rem; }
+.ab-modal { background: #fff; border-radius: 20px; padding: 1.8rem; max-width: 560px; width: 100%; box-shadow: 0 20px 60px rgba(0, 0, 0, .35); animation: ab-pop .25s ease; }
+.ab-modal h2 { display: flex; gap: .6rem; align-items: center; }
+.ab-modal .actions { display: flex; gap: .8rem; justify-content: flex-end; margin-top: 1.2rem; flex-wrap: wrap; }
+.ab-steps { margin: .6rem 0; padding-left: 1.2rem; color: var(--ab-ink-soft); font-size: .9rem; }
+.ab-note { background: #eef3ff; border-radius: 10px; padding: .6rem .8rem; font-size: .85rem; color: var(--ab-ink-soft); }
+
+@keyframes ab-spin { to { transform: rotate(360deg); } }
+@keyframes ab-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes ab-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ab-pop { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+@keyframes ab-slide { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: none; } }
+@media (max-width: 700px) { :root { font-size: 17px; } .ab-session { gap: 1rem; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
