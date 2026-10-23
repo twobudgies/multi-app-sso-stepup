@@ -1,0 +1,9 @@
+@{ var lim = (JsonElement)ViewBag.Limits; }
+<h1>Transfer limit</h1>
+<p class="lead">The maximum a customer can send per day.</p>
+<div class="ab-card" style="max-width:520px">
+  <div class="tag">Current limit</div><div class="ab-amount">@lim.GetProperty("dailyTransferLimit").GetDecimal().ToString("C0", new System.Globalization.CultureInfo("en-IE"))</div>
+  <h2>Change limit <span class="ab-sensitive-tag">NEEDS STEP-UP</span></h2>
+  <form method="post"><label class="ab-field">New daily limit (EUR)<input name="limit" type="number" min="100" step="100" value="@lim.GetProperty("dailyTransferLimit").GetDecimal()" /></label>
+  <button class="ab-btn primary">Save limit</button></form>
+</div>

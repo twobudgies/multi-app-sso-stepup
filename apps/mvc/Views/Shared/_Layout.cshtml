@@ -1,0 +1,57 @@
+@{
+    JsonElement? me = ViewBag.Me as JsonElement?;
+    string S(string k) => me.HasValue && me.Value.ValueKind == JsonValueKind.Object && me.Value.TryGetProperty(k, out var v) && v.ValueKind != JsonValueKind.Null ? v.ToString() : "";
+    var level = S("level"); var authTime = S("authTime"); var serverTime = S("serverTime"); int win = ViewBag.Window ?? 60;
+    string Active(string c) => ViewContext.RouteData.Values["controller"]?.ToString() == "BackOffice" && ViewContext.RouteData.Values["action"]?.ToString() == c ? "active" : "";
+}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Acme Bank - Back Office</title>
+  <link rel="stylesheet" href="/ui/acme.css" />
+</head>
+<body>
+<header class="ab-header">
+  <div class="ab-brand"><span class="ab-logo">A</span> Acme Bank</div>
+  <nav class="ab-nav">
+    <a href="http://localhost:5300/">Customer Portal</a>
+    <a href="http://localhost:5400/">Payments and Transfers</a>
+    <a href="/" class="active">Back Office</a>
+  </nav>
+  @if (User.Identity?.IsAuthenticated == true) {
+    <form method="post" asp-controller="BackOffice" asp-action="SignOut"><button class="ab-btn">Sign out</button></form>
+  }
+</header>
+@if (me.HasValue) {
+<section class="ab-session" aria-label="Session panel">
+  <div><span class="k">App</span><span class="v">Back Office</span></div>
+  <div><span class="k">User</span><span class="v">@S("user")</span></div>
+  <div><span class="k">Assurance (acr)</span><span class="v"><span class="ab-badge @(level == "LoA2" ? "loa2" : "loa1")">@(level == "LoA2" ? "LoA2 password + TOTP" : "LoA1 password")</span></span></div>
+  <div><span class="k">Authenticated at (auth_time)</span><span class="v" id="at"></span></div>
+  <div class="ab-countdown" id="cd" style="flex:1"><span class="k">Step-up window (@(win)s)</span><span class="v" id="cdt">...</span><div class="bar"><i id="cdb"></i></div></div>
+</section>
+<script>
+  (function () {
+    var authTime = @(authTime == "" ? "null" : authTime), level = "@level", win = @win;
+    var offset = @(serverTime == "" ? "0" : serverTime) - Date.now() / 1000;
+    var cd = document.getElementById('cd'), t = document.getElementById('cdt'), b = document.getElementById('cdb');
+    if (authTime) document.getElementById('at').textContent = new Date(authTime * 1000).toLocaleTimeString();
+    function tick() {
+      var left = (authTime && level === 'LoA2') ? Math.max(0, Math.ceil(authTime + win - (Date.now() / 1000 + offset))) : 0;
+      cd.className = 'ab-countdown' + (left === 0 ? ' off' : left <= 15 ? ' low' : '');
+      t.textContent = left > 0 ? Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0') + ' left' : (level === 'LoA2' ? 'expired: next sensitive action asks again' : 'no step-up active');
+      b.style.width = (left / win * 100) + '%';
+    }
+    tick(); setInterval(tick, 500);
+  })();
+</script>
+}
+<main class="ab-main">@RenderBody()</main>
+<div class="ab-toasts" role="status">
+  @if (TempData["ok"] is string ok) { <div class="ab-toast ok">@ok</div> }
+  @if (TempData["err"] is string err) { <div class="ab-toast err">@err</div> }
+</div>
+<script>setTimeout(function(){document.querySelectorAll('.ab-toast').forEach(function(e){e.style.display='none'})}, 7000);</script>
+</body>
+</html>
