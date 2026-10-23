@@ -27,3 +27,6 @@ New terms are added here as the project introduces them.
 | **CI** | A robot on GitHub that runs checks on every pull request | The gitleaks workflow |
 | **`.env` file** | A local, never-committed file holding your settings and secrets | Copy of `.env.example` |
 | **WSL2** | A small Linux inside Windows that Docker Desktop runs on | Required for the Windows demo |
+| **Realm** | A Keycloak workspace holding users, apps and settings | `stepup` |
+| **Mapper** | A Keycloak rule that copies a fact into a token | puts `acr` into the access token |
+| **Audience (`aud`)** | Who a token is meant for | `stepup-api` |

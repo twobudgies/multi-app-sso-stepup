@@ -14,3 +14,4 @@ Dated, plain-language journal, one short entry per task. Committed on purpose, b
 | 2026-10-23 | GATE-P0 (#14) | Phase 0 finished; glossary extended. |
 | 2026-10-23 | PR #15 | Added the Acme Bank demo story and the end-to-end test task. |
 | 2026-10-23 | Phase R | Retrofit: README repo map, docs index, ADRs for layout and ports, narrower secret allowlist, Acme Bank notes in design docs. |
+| 2026-10-23 | P1-1..P1-5 | Keycloak starts from `docker compose up` with the whole realm imported: three clients, test user with a ready-made authenticator code seed, password-then-TOTP login levels, and `acr`, `auth_time` and the API audience in the access token. Proved with a headless login script (ran it). |
