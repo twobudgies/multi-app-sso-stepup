@@ -35,7 +35,7 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
   - profile loader with fail-fast validation (TypeScript for SPAs, C# for API/MVC, same profile file)
   - request builder and evaluator interfaces; no app code may name Keycloak
   - done when: swapping `IDP_PROFILE` is the only change needed to select a profile; schema documented
-- [ ] P2-1: Scaffold `apps/react`, `apps/angular`, `apps/mvc`, `api/` (ASP.NET Core); minimal home, profile, one sensitive action each
+- [x] P2-1: Scaffold `apps/react`, `apps/angular`, `apps/mvc`, `api/` (ASP.NET Core); minimal home, profile, one sensitive action each
   - shared-API architecture is confirmed by the owner
 - [x] P2-1a: Shared demo domain and design: fictional "Acme Bank" (no real brands or logos), fake data only. `apps/react` = Customer Portal (accounts, balances, profile), `apps/angular` = Payments and Transfers (send money, add payee), `apps/mvc` = Back Office / Admin (limits, approvals, user management)
   - shared look: same palette, header and a nav bar linking across all three apps (visible SSO: click through with no login prompt); shared CSS tokens in one place (e.g. `shared/acme.css`) used by all three
@@ -50,20 +50,20 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
 - [x] P2-3: MVC: Authorization Code + PKCE, `state` and `nonce` verified, server-side session, cookie flags, dev-mode exception documented
 - [x] P2-4: React: Authorization Code + PKCE (`oidc-client-ts`), in-memory token storage, `state`/`nonce` verified
 - [x] P2-5: Angular: Authorization Code + PKCE (`angular-oauth2-oidc` or equivalent), in-memory token storage, `state`/`nonce` verified
-- [ ] P2-6: Logout: local + RP-initiated at the IdP in all three; document what happens to the other apps' sessions (back/front-channel out of scope)
-- [ ] P2-7: Manual SSO verification steps in `docs/manual-checks.md` (log in to one client, open another, no prompt)
-- [ ] GATE-P2: Phase 2 report, then stop
+- [x] P2-6: Logout: local + RP-initiated at the IdP in all three; document what happens to the other apps' sessions (back/front-channel out of scope)
+- [x] P2-7: Manual SSO verification steps in `docs/manual-checks.md` (log in to one client, open another, no prompt)
+- [x] GATE-P2: Phase 2 report, then stop
 
 ## Phase 3: Step-up MFA
 - [x] P3-1: Policy per sensitive action (use the table in `docs/step-up-actions.md`; owner confirmed the actions and set **1 minute for all**; read the value from config/env `STEPUP_MAX_AGE_SECONDS`, default 60; use a small clock-skew leeway such as 5 s because the window is short) (required `acr`, max age, e.g. LoA2 and 5 min) in one config file the API reads
 - [x] P3-2: API enforcement via the adapter evaluator (level + auth time from the profile, not hard-coded `acr`/`auth_time`); on failure return the RFC 9470 `401` challenge and do NOT perform the action
-- [ ] P3-3: Clients (via the adapter request builder) handle the challenge: new authorization request with `acr_values`, `max_age`, `prompt=login` where needed; originating action and return URL kept server-side (MVC session) or in memory keyed by `state` (SPAs); return URL allow-listed, no open redirect
-- [ ] P3-4: On return, re-validate the new token and let the API re-check `acr`/`auth_time` before the action resumes (never assume the IdP honored the request)
-- [ ] P3-5: Failure paths: user cancels MFA, IdP ignores `acr_values`, token `acr` lower than requested, clock skew
-- [ ] P3-6: Document shared-freshness behavior explicitly (MFA in one client satisfies the others inside the window)
-- [ ] P3-7: End-to-end run against live Keycloak: full SSO and step-up flow across all three apps and the API (SSO click-through, each sensitive action, shared window, expiry after 1 minute, failure paths from P3-5)
+- [x] P3-3: Clients (via the adapter request builder) handle the challenge: new authorization request with `acr_values`, `max_age`, `prompt=login` where needed; originating action and return URL kept server-side (MVC session) or in memory keyed by `state` (SPAs); return URL allow-listed, no open redirect
+- [x] P3-4: On return, re-validate the new token and let the API re-check `acr`/`auth_time` before the action resumes (never assume the IdP honored the request)
+- [x] P3-5: Failure paths: user cancels MFA, IdP ignores `acr_values`, token `acr` lower than requested, clock skew
+- [x] P3-6: Document shared-freshness behavior explicitly (MFA in one client satisfies the others inside the window)
+- [x] P3-7: End-to-end run against live Keycloak: full SSO and step-up flow across all three apps and the API (SSO click-through, each sensitive action, shared window, expiry after 1 minute, failure paths from P3-5)
   - record exactly what was actually run vs only reviewed (with evidence) in `docs/manual-checks.md`; do not claim anything unrun
-- [ ] GATE-P3: Phase 3 report, then stop
+- [x] GATE-P3: Phase 3 report, then stop
 
 ## Phase 4: Code-review verification (no automated tests, per owner)
 - [ ] P4-1: Write `docs/review-checklist.md` listing the security-critical code paths (token validation, nonce/state, acr/auth_time checks, cookie flags, redirect allow-list, client tamper resistance) with file:line pointers and the manual check for each

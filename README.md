@@ -10,16 +10,31 @@ Configuration: copy `.env.example` to `.env` (git-ignored) and edit. The example
 
 | Folder | Purpose | Port | Status |
 |--------|---------|------|--------|
-| `apps/react` | Customer Portal (React SPA) | 5300 | planned |
-| `apps/angular` | Payments and Transfers (Angular SPA) | 5400 | planned |
-| `apps/mvc` | Back Office (ASP.NET Core MVC) | 5200 | planned |
-| `api/` | Shared ASP.NET Core API, enforces step-up | 5100 | planned |
-| `packages/` | Shared code: `idp-profile` (profile loader), `ui-tokens` (Acme Bank look) | - | planned |
-| `idp/` | Keycloak realm and IdP profiles | 8180 | in progress |
-| `tools/` | `idp-check` capability probe | - | planned |
+| `apps/react` | Customer Portal (React SPA) | 5300 | built |
+| `apps/angular` | Payments and Transfers (Angular SPA) | 5400 | built |
+| `apps/mvc` | Back Office (ASP.NET Core MVC) | 5200 | built |
+| `api/` | Shared ASP.NET Core API, enforces step-up | 5100 | built |
+| `packages/` | Shared code: `idp-profile` (TS loader), `dotnet/IdpProfile` (C# loader and evaluator), `ui-tokens` (Acme Bank look) | - | built |
+| `idp/` | Keycloak realm and IdP profiles | 8180 | built |
+| `tools/` | `login-probe` (headless login), `e2e` (manual end-to-end run); `idp-check` planned | - | partly built |
 | `demo/` | Live-demo scripts and backups | - | planned |
 | `docs/` | ALL documentation (index: `docs/README.md`, history: `docs/progress-log.md`) | - | yes |
 | `agent/` | Task-runner agent files | - | yes |
+
+## Run the demo (macOS and Windows)
+
+Needs Docker Desktop, .NET SDK 10 and Node.js 20+. From the repo root:
+
+```text
+npm run install:all     # once: installs the React and Angular dependencies
+npm run up              # Keycloak in Docker (wait ~30 s)
+npm run dev:api         # terminal 2, port 5100
+npm run dev:react       # terminal 3, port 5300
+npm run dev:angular     # terminal 4, port 5400
+npm run dev:mvc         # terminal 5, port 5200
+```
+
+Open http://localhost:5300 and sign in as `alice` / `alice-dev-only`. Authenticator code: add the Base32 secret from `docs/idp-keycloak.md` to a phone app. Reset the IdP with `npm run reset`. Full checklist: `docs/manual-checks.md`.
 
 ## Documentation
 

@@ -1,6 +1,6 @@
 # Step-up actions and flow
 
-> Status: design (not yet implemented). Actions and the 1-minute window are confirmed by the owner; task P3-1 turns them into the config file the API reads.
+> Status: implemented (actions live in `api/policy.json`, enforced in `api/Program.cs`). The skew leeway makes the effective window about 65 s.
 
 ## Concept
 
@@ -11,16 +11,16 @@ Being logged in (SSO) proves *who* you are. Some actions need proof that it is r
 | LoA1 | `1` | password only |
 | LoA2 | `2` | password + TOTP |
 
-> Domain note: the apps are the Acme Bank Customer Portal (React), Payments and Transfers (Angular) and Back Office (MVC). The action names in the table below are placeholders; task P2-1a replaces them with banking actions (for example transfer over a limit, add payee, change limits, approve) and updates this table. Window: 60 s (`STEPUP_MAX_AGE_SECONDS`), skew 5 s.
-
 ## Which actions need step-up (confirmed by owner, 1 minute for all)
 
 | App | Action | API endpoint | Required level | Max age of MFA |
 |-----|--------|--------------|----------------|----------------|
-| all | View home, profile, list items | `GET /me`, `GET /items` | LoA1 | none |
-| React | **Change email address** | `POST /sensitive/change-email` | LoA2 | 1 min |
-| Angular | **Approve a transfer** | `POST /sensitive/approve-transfer` | LoA2 | 1 min |
-| MVC | **Rotate API key** | `POST /sensitive/rotate-api-key` | LoA2 | 1 min |
+| all | View accounts, payees, limits, transfers, `/me` | `GET /accounts` etc. | LoA1 | none |
+| React (Customer Portal) | **Change e-mail address** | `POST /sensitive/change-email` | LoA2 | 60 s |
+| Angular (Payments) | **Add payee** | `POST /sensitive/add-payee` | LoA2 | 60 s |
+| Angular (Payments) | **Send money over 1000** (small transfers need nothing) | `POST /sensitive/transfer` | LoA2 above 1000 | 60 s |
+| MVC (Back Office) | **Change transfer limit** | `POST /sensitive/change-limit` | LoA2 | 60 s |
+| MVC (Back Office) | **Approve transfer** | `POST /sensitive/approve-transfer` | LoA2 | 60 s |
 
 One minute is short on purpose so the expiry can be shown in the live demo. The value is configuration (`STEPUP_MAX_AGE_SECONDS`, default 60), not code, and each action can still have its own value in the policy file. The policy lives on the API side, never in client code.
 
