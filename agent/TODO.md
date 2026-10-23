@@ -1,14 +1,69 @@
 # TODO list (edit this file; the agent works top to bottom)
 
 Markers: `[ ]` pending · `[~]` in progress · `[x]` done · `[!]` blocked
-Each task needs a unique ID. Optional indented lines below a task are its details / acceptance check.
+Context, decisions and rules live in `BRIEF.md`. `GATE-*` tasks mean: write the phase report, mark done, END THE RUN.
+Keep `T-FINAL` last. New tasks go above it.
 
-- [ ] T1: Example task — replace me with your first real task
-  - done when: describe how to verify it
-- [ ] T2: Example task two
+## Phase 0: Repo hygiene
+- [ ] P0-1: Extend `.gitignore`, add `.env.example`, README stub
+  - `.gitignore` additionally covers `*.pem`, `*.key`, IdP exports (`*-export.json`, but NOT the checked-in realm file), `*.log`, `node_modules/`, `bin/`, `obj/`, `dist/`
+  - `.env.example` with placeholders only; README marked "PoC, not production-hardened"
+  - done when: files exist, `git check-ignore` confirms `.env` and `*.pem` are ignored
+- [ ] P0-2: gitleaks pre-commit hook and CI
+  - `.pre-commit-config.yaml` with gitleaks; `.github/workflows/gitleaks.yml` running `gitleaks detect` over full history (`fetch-depth: 0`)
+  - done when: if gitleaks is installed locally, a fake secret in a temp file is rejected by `gitleaks protect --staged`; otherwise say it was not run
+- [ ] P0-3: Update `SECURITY.md` on how test credentials are handled (fake dev-only values, documented, allowlisted)
+- [ ] GATE-P0: Phase 0 report, then stop
+
+## Phase 1: Keycloak IdP (reproducible)
+- [ ] P1-1: `docker-compose.yml` for Keycloak with an imported realm JSON in `idp/keycloak/`
+  - test users only, no real data; secrets via `${ENV}` placeholders from `.env`
+  - done when: `docker compose up` yields a working realm with no manual clicks (run it if Docker is available)
+- [ ] P1-2: Clients `app-react` and `app-angular` (public, PKCE S256), `app-mvc` (confidential), and an audience for the API
+- [ ] P1-3: TOTP second factor; pre-seed a documented fake TOTP secret for the test user so no manual enrolment is needed (flag if Keycloak import cannot do this)
+- [ ] P1-4: Authentication flow with levels of assurance: LoA1 = password, LoA2 = password + TOTP, mapped to `acr`
+- [ ] P1-5: `acr` and `auth_time` in ID **and access** tokens; decide on `amr`; document the mappers in `docs/idp-keycloak.md`
+- [ ] GATE-P1: Phase 1 report, then stop
+
+## Phase 2: SSO for three clients and a shared API
+- [ ] P2-1: Scaffold `apps/react`, `apps/angular`, `apps/mvc`, `api/` (ASP.NET Core); minimal home, profile, one sensitive action each
+  - first confirm the shared-API architecture in `BRIEF.md` with the owner; if not confirmed, mark `[!]`
+- [ ] P2-2: API: JWT bearer validation (JWKS with caching/rotation, `iss`, `aud`, `exp`); `GET /me`, `POST /sensitive/{app}` (no policy yet)
+- [ ] P2-3: MVC: Authorization Code + PKCE, `state` and `nonce` verified, server-side session, cookie flags, dev-mode exception documented
+- [ ] P2-4: React: Authorization Code + PKCE (`oidc-client-ts`), in-memory token storage, `state`/`nonce` verified
+- [ ] P2-5: Angular: Authorization Code + PKCE (`angular-oauth2-oidc` or equivalent), in-memory token storage, `state`/`nonce` verified
+- [ ] P2-6: Logout: local + RP-initiated at the IdP in all three; document what happens to the other apps' sessions (back/front-channel out of scope)
+- [ ] P2-7: Manual SSO verification steps in `docs/manual-checks.md` (log in to one client, open another, no prompt)
+- [ ] GATE-P2: Phase 2 report, then stop
+
+## Phase 3: Step-up MFA
+- [ ] P3-1: Policy per sensitive action (required `acr`, max age, e.g. LoA2 and 5 min) in one config file the API reads
+- [ ] P3-2: API enforcement from validated `acr`/`auth_time`; on failure return the RFC 9470 `401` challenge and do NOT perform the action
+- [ ] P3-3: Clients handle the challenge: new authorization request with `acr_values`, `max_age`, `prompt=login` where needed; originating action and return URL kept server-side (MVC session) or in memory keyed by `state` (SPAs); return URL allow-listed, no open redirect
+- [ ] P3-4: On return, re-validate the new token and let the API re-check `acr`/`auth_time` before the action resumes (never assume the IdP honored the request)
+- [ ] P3-5: Failure paths: user cancels MFA, IdP ignores `acr_values`, token `acr` lower than requested, clock skew
+- [ ] P3-6: Document shared-freshness behavior explicitly (MFA in one client satisfies the others inside the window)
+- [ ] GATE-P3: Phase 3 report, then stop
+
+## Phase 4: Code-review verification (no automated tests, per owner)
+- [ ] P4-1: Write `docs/review-checklist.md` listing the security-critical code paths (token validation, nonce/state, acr/auth_time checks, cookie flags, redirect allow-list, client tamper resistance) with file:line pointers and the manual check for each
+- [ ] P4-2: Self-review every item against the code; fix or log gaps. Report which items were only read and which were actually run
+- [ ] GATE-P4: Phase 4 report, then stop
+
+## Phase 5: IdP portability (only after Phase 3 works)
+- [ ] P5-1: Isolate IdP differences (acr names, claim names, how step-up is requested) in a config/adapter layer
+- [ ] P5-2: Entra ID / Okta profile as documentation + config template only; no tenant, so untested
+- [ ] P5-3: README states exactly which IdPs were tested (Keycloak only); no "works with any IdP" claim
+- [ ] GATE-P5: Phase 5 report, then stop
+
+## Phase 6: Docs and pre-publish
+- [ ] P6-1: README: architecture diagram, SSO flow, step-up sequence diagram, claims relied on, known limitations, how to run
+- [ ] P6-2: ADRs in `docs/decisions/`: PKCE code flow, server-side enforcement (API), freshness policy (shared), SPA tokens in memory vs BFF
+- [ ] P6-3: Pre-publish checklist doc: full-history `gitleaks` + `trufflehog`, then flip visibility OR publish a fresh squashed repo (owner prefers a fresh repo)
+- [ ] GATE-P6: Phase 6 report, then stop
 
 <!-- Keep this task LAST. New tasks go above it. -->
 - [ ] T-FINAL: REMIND THE USER to make this repo public (currently private)
-  - Do NOT change the visibility yourself. Only tell the user, then mark this `[!]` with `blocked: waiting for user to make repo public`.
-  - Pre-flight checklist to show them: no secrets in code or git history (`git log -p` scan), LICENSE name correct, SECURITY.md contact filled in, private vulnerability reporting enabled, git author email OK to be public, README up to date.
-  - Then the user runs: `gh repo edit twobudgies/multi-app-sso-stepup --visibility public --accept-visibility-change-consequences`
+  - Do NOT change the visibility or create a new repo yourself. Only tell the user, then mark this `[!]` with `blocked: waiting for user`.
+  - Pre-flight checklist to show them: no secrets in code or git history (gitleaks + trufflehog, full history), LICENSE name correct, SECURITY.md contact filled in, private vulnerability reporting enabled, git author email OK to be public, README up to date.
+  - Owner prefers a fresh squashed repo. If flipping instead: `gh repo edit twobudgies/multi-app-sso-stepup --visibility public --accept-visibility-change-consequences`

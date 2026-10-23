@@ -16,6 +16,7 @@ Optional: `/run-todos <extra instructions>` passes extra guidance to the agent f
 
 | File | Who writes it | Purpose |
 |------|---------------|---------|
+| `BRIEF.md` | You | Project context, goals, decisions and rules. Read first on every run. |
 | `TODO.md` | You (task text) and the agent (markers) | The instructions. Source of truth for task status. |
 | `LOG.md` | Agent, only via `log.sh` | Append-only, timestamped history. Git-ignored. Created on first log. |
 | `log.sh` | — | Helper that appends one line to `LOG.md`. |
@@ -65,6 +66,11 @@ Example:
 - Blocked after 3 genuine attempts, or needs a decision or credential: marks `[!]`, writes `blocked: <reason>`, continues with other tasks.
 - No destructive or outward-facing actions (force-push, deploys, deleting data, sending messages) unless a task explicitly says so.
 - Never commits to `main`. Each task with file changes goes through a `<type>/<task-id>-<slug>` branch, a PR into `main`, and a squash merge (see [CONTRIBUTING.md](../CONTRIBUTING.md)). It never force-pushes and does not bypass failing checks or branch protection.
+
+## Phase gates
+
+Tasks named `GATE-*` make the agent write a phase report and end the run.
+Review it, then run `/run-todos` to start the next phase.
 
 ## Final step: going public
 
