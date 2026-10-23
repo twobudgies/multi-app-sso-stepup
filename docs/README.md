@@ -8,3 +8,4 @@
 | [token-lifecycle.md](token-lifecycle.md) | Which tokens exist, where each app stores them, how refresh works |
 | [step-up-actions.md](step-up-actions.md) | Which actions need step-up MFA, the policy, and the step-up flow |
 | [idp-adapter.md](idp-adapter.md) | How any IdP (Entra, Okta, Cognito, generic) is plugged in via profiles |
+| [glossary.md](glossary.md) | Plain-language meaning of every term used |
