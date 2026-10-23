@@ -1,7 +1,9 @@
-# Dev-only fake values are allowlisted explicitly here (see SECURITY.md).
+# Dev-only fake values are allowlisted narrowly (see SECURITY.md).
 [extend]
 useDefault = true
 
 [allowlist]
-description = "Fake dev-only values and placeholders"
+description = "Placeholder values in .env.example only"
+condition = "AND"
 paths = ['''\.env\.example$''']
+regexes = ['''change-me-dev-only''']

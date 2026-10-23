@@ -24,6 +24,6 @@ in `docs/`, and must never be reused anywhere real.
   `.env.example` as obvious placeholders (`change-me-dev-only`).
 - Real values go in the git-ignored `.env`, never in a commit.
 - Intentional fake values that trip the scanner are allowlisted in
-  `.gitleaks.toml` with a comment saying why. Do not allowlist anything that
+  `.gitleaks.toml` (only the exact placeholder `change-me-dev-only` inside `.env.example`; anything else there is still scanned) with a comment saying why. Do not allowlist anything that
   could be a real secret.
 - Anything real that was committed must be rotated, not just deleted.

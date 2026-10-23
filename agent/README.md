@@ -18,7 +18,7 @@ Optional: `/run-todos <extra instructions>` passes extra guidance to the agent f
 |------|---------------|---------|
 | `BRIEF.md` | You | Project context, goals, decisions and rules. Read first on every run. |
 | `TODO.md` | You (task text) and the agent (markers) | The instructions. Source of truth for task status. |
-| `LOG.md` | Agent, only via `log.sh` | Append-only, timestamped history. Git-ignored. Created on first log. |
+| `LOG.md` | Agent, only via `log.sh` | Append-only, timestamped history. Git-ignored. Created on first log. The committed record is `docs/progress-log.md`. |
 | `log.sh` | — | Helper that appends one line to `LOG.md`. |
 | `../.claude/agents/todo-runner.md` | — | The agent's system prompt (rules and loop). |
 | `../.claude/commands/run-todos.md` | — | The `/run-todos` slash command. |

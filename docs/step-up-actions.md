@@ -11,6 +11,8 @@ Being logged in (SSO) proves *who* you are. Some actions need proof that it is r
 | LoA1 | `1` | password only |
 | LoA2 | `2` | password + TOTP |
 
+> Domain note: the apps are the Acme Bank Customer Portal (React), Payments and Transfers (Angular) and Back Office (MVC). The action names in the table below are placeholders; task P2-1a replaces them with banking actions (for example transfer over a limit, add payee, change limits, approve) and updates this table. Window: 60 s (`STEPUP_MAX_AGE_SECONDS`), skew 5 s.
+
 ## Which actions need step-up (confirmed by owner, 1 minute for all)
 
 | App | Action | API endpoint | Required level | Max age of MFA |
