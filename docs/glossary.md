@@ -22,3 +22,8 @@ New terms are added here as the project introduces them.
 | **Public client** | An app that cannot keep a secret (runs in the browser) | React, Angular |
 | **Confidential client** | An app with a server that can keep a secret | MVC |
 | **Adapter / profile** | A small file that tells our code how a particular IdP behaves | `idp/profiles/keycloak.json` |
+| **gitleaks** | A scanner that finds passwords and keys accidentally committed to git | Blocks a commit containing a fake AWS key |
+| **pre-commit hook** | A check that runs automatically just before a commit is saved | Runs gitleaks |
+| **CI** | A robot on GitHub that runs checks on every pull request | The gitleaks workflow |
+| **`.env` file** | A local, never-committed file holding your settings and secrets | Copy of `.env.example` |
+| **WSL2** | A small Linux inside Windows that Docker Desktop runs on | Required for the Windows demo |

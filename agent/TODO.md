@@ -14,7 +14,7 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
   - done when: if gitleaks is installed locally, a fake secret in a temp file is rejected by `gitleaks protect --staged`; otherwise say it was not run
 - [x] P0-3: Update `SECURITY.md` on how test credentials are handled (fake dev-only values, documented, allowlisted)
 - [x] P0-4: `docs/windows-setup.md` for the Windows demo laptop (Docker Desktop + WSL2, .NET SDK, Node, free ports, clock sync, git line endings); mark steps only reviewed, not run, since dev is on macOS
-- [ ] GATE-P0: Phase 0 report, then stop
+- [x] GATE-P0: Phase 0 report, then stop
 
 ## Phase 1: Keycloak IdP (reproducible)
 - [ ] P1-1: `docker-compose.yml` for Keycloak with an imported realm JSON in `idp/keycloak/`
