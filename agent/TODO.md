@@ -12,8 +12,8 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
 - [x] P0-2: gitleaks pre-commit hook and CI
   - `.pre-commit-config.yaml` with gitleaks; `.github/workflows/gitleaks.yml` running `gitleaks detect` over full history (`fetch-depth: 0`)
   - done when: if gitleaks is installed locally, a fake secret in a temp file is rejected by `gitleaks protect --staged`; otherwise say it was not run
-- [ ] P0-3: Update `SECURITY.md` on how test credentials are handled (fake dev-only values, documented, allowlisted)
-- [ ] P0-4: `docs/windows-setup.md` for the Windows demo laptop (Docker Desktop + WSL2, .NET SDK, Node, free ports, clock sync, git line endings); mark steps only reviewed, not run, since dev is on macOS
+- [x] P0-3: Update `SECURITY.md` on how test credentials are handled (fake dev-only values, documented, allowlisted)
+- [x] P0-4: `docs/windows-setup.md` for the Windows demo laptop (Docker Desktop + WSL2, .NET SDK, Node, free ports, clock sync, git line endings); mark steps only reviewed, not run, since dev is on macOS
 - [ ] GATE-P0: Phase 0 report, then stop
 
 ## Phase 1: Keycloak IdP (reproducible)
