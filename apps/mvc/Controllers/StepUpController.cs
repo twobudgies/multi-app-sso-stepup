@@ -53,9 +53,10 @@ public class StepUpController(ApiClient api, AppConfig cfg, Profile profile) : B
     [Microsoft.AspNetCore.Authorization.AllowAnonymous]
     public IActionResult Failed(string e)
     {
-        TempData["err"] = e == "cancelled" ? "Step-up was cancelled. Nothing was changed." : "Sign-in failed. Nothing was changed.";
+        // Show a page instead of redirecting into another challenge: a persistent IdP error must not loop.
         HttpContext.Session.Remove("pending");
-        return Redirect("/");
+        ViewBag.Message = e == "cancelled" ? "Step-up was cancelled. Nothing was changed." : "Sign-in failed. Nothing was changed.";
+        return View("Failed");
     }
 
     [HttpPost("cancel"), ValidateAntiForgeryToken]

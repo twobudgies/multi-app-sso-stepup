@@ -41,13 +41,13 @@ export class AuthService {
 
   /** Returns true when signed in (state and nonce are verified by the library). */
   async init(): Promise<boolean> {
+    const q = new URLSearchParams(window.location.search); // read BEFORE the library cleans the URL
     try {
       await this.oauth.loadDiscoveryDocumentAndTryLogin();
     } catch (e: any) {
       this.startError = e?.params?.error === 'access_denied' ? 'Step-up was cancelled. Nothing was changed.' : `Sign-in failed: ${e?.message ?? e}`;
       return false;
     }
-    const q = new URLSearchParams(window.location.search);
     if (q.get('error')) {
       this.startError = q.get('error') === 'access_denied' ? 'Step-up was cancelled. Nothing was changed.' : `Sign-in failed: ${q.get('error')}`;
       window.history.replaceState({}, '', '/');

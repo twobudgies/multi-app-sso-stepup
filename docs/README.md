@@ -17,3 +17,4 @@
 | [demo-domain.md](demo-domain.md) | The Acme Bank story and what each app does |
 | [decisions/](decisions/) | ADR-0003 (SPA state), ADR-0004 (minimal TS loader) |
 | [manual-checks.md](manual-checks.md) | Step-by-step demo checklist and the evidence of what was run vs only reviewed |
+| [review-checklist.md](review-checklist.md) | Security-critical code paths, how each was checked (run vs read), known weaknesses |

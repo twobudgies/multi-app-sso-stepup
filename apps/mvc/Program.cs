@@ -48,6 +48,7 @@ builder.Services.AddAuthentication(o =>
     o.RequireHttpsMetadata = false; // dev only
     o.ResponseType = OpenIdConnectResponseType.Code; // Authorization Code
     o.UsePkce = true;
+    o.PushedAuthorizationBehavior = PushedAuthorizationBehavior.Disable; // plain authorize URL: works with any IdP, easier to explain on screen
     o.SaveTokens = true;
     o.MapInboundClaims = false;
     o.GetClaimsFromUserInfoEndpoint = false;

@@ -24,7 +24,7 @@ const LIMIT_NOTE = 1000;
   @if (phase() === 'loading') {
     <div class="ab-center"><div><span class="ab-spinner"></span></div><div>Signing you in through Acme Bank single sign-on...</div></div>
   } @else if (phase() === 'signedout') {
-    <div class="ab-center"><h1>You are signed out</h1><p class="lead">Your Acme Bank session has ended.</p>
+    <div class="ab-center"><h1>{{ errorText() ? 'Sign-in was not completed' : 'You are signed out' }}</h1><p class="lead">{{ errorText() || 'Your Acme Bank session has ended.' }}</p>
       <button class="ab-btn primary" (click)="signInAgain()">Sign in</button></div>
   } @else {
     <section class="ab-session" aria-label="Session panel">
@@ -104,6 +104,7 @@ export class App implements OnInit, OnDestroy {
   toasts = signal<Toast[]>([]);
   pending = signal<Pending | null>(null);
   busy = signal(false);
+  errorText = signal('');
   to = signal('');
   amount = signal(50);
   newName = signal('');
@@ -130,7 +131,7 @@ export class App implements OnInit, OnDestroy {
     this.timer = setInterval(() => this.now.set(Date.now()), 500);
     const ok = await this.auth.init();
     const flash = sessionStorage.getItem('ab.flash');
-    if (this.auth.startError) sessionStorage.setItem('ab.flash', this.auth.startError);
+    if (this.auth.startError) { this.errorText.set(this.auth.startError); this.phase.set('signedout'); return; } // no auto-retry after an IdP error (would loop)
     if (!ok) {
       if (sessionStorage.getItem('ab.loggedOut')) { this.phase.set('signedout'); return; }
       this.auth.signIn(); // SSO: no prompt if the IdP session exists

@@ -28,14 +28,21 @@ Environment: macOS, Keycloak 26.0 in Docker, .NET 10, Node 24, headless Chromium
 | 4 MVC opens with no prompt; change-limit inside the window completes | PASS (run) |
 | 5 after 72 s the same Angular action asks for step-up again | PASS (run) |
 | 6 "Not now" cancels, nothing performed | PASS (run) |
-| 6b error callback (`error=access_denied`) at React does not crash | PASS (run, weak check: only proves no crash and a return to the app) |
+| 6b error callback (`error=access_denied`) at React does not crash | WEAK (run): only proves no crash. Superseded by `tools/e2e/negative.mjs` A (see below), do not rely on 6b |
 | 7 sign-out at React, then Angular shows the IdP login | PASS (run) |
 | 11 API tamper cases (no token, bad token, LoA1, stale LoA2, fresh LoA2) | PASS (run with curl, see [api.md](api.md)) |
 
+## Evidence added in Phase 4 (run 2026-10-23)
+| Check | Result |
+|-------|--------|
+| A. IdP error on return (`login_required`) at React and Angular (authorize request rewritten with `prompt=none`), and at MVC (error delivered to `/signin-oidc`): a message is shown, one authorize request only, no loop | PASS (run, `tools/e2e/negative.mjs`). Found and fixed a redirect loop in Angular |
+| B. IdP ignores `acr_values`/`max_age` (request rewritten), React and MVC: client refuses to continue, action NOT performed | PASS (run). Angular not run (same code pattern) |
+| C. Evaluator with shifted clock (`npm run check:evaluator`): exact limit, +5 s leeway, 66 s denied, IdP clock 6 s ahead denied, LoA1, missing `auth_time`, unknown `acr` | PASS (run, 9 cases) |
+
 ## Only reviewed, NOT run
-- The IdP ignoring `acr_values` (client checks the returned level and the API re-checks): code reviewed, no IdP that ignores it was available.
-- Real clock skew between API and IdP: only the 5 s leeway in code was reviewed.
-- Cancelling at the IdP's own page (Keycloak's OTP page has no cancel button): only the `error=access_denied` return path was exercised, with a synthetic callback.
+- The IdP ignoring `acr_values` at Angular (React and MVC were run with a rewritten request).
+- Real clock skew between two machines (only the evaluator with synthetic claims was run).
+- Cancelling at the IdP's own page (Keycloak's OTP page has no cancel button): the error-return path was run through a rewritten request instead.
 - Windows laptop: nothing was run on Windows.
 - Refresh tokens / silent renewal: not used; an expired access token (5 min) sends the user back through SSO.
 
