@@ -8,6 +8,7 @@
     "dev:api": "dotnet run --project api",
     "probe": "node tools/login-probe.mjs",
     "dev:react": "npm --prefix apps/react run dev",
-    "install:all": "npm --prefix apps/react install"
+    "install:all": "npm --prefix apps/react install",
+    "dev:mvc": "dotnet run --project apps/mvc"
   }
 }

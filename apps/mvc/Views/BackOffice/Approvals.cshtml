@@ -1,0 +1,8 @@
+@{ var tr = (JsonElement)ViewBag.Transfers; }
+<h1>Transfer approvals</h1>
+<p class="lead">Large transfers wait here until a staff member approves them. <span class="ab-sensitive-tag">APPROVING NEEDS STEP-UP</span></p>
+<div class="ab-card"><table class="ab-table"><thead><tr><th>ID</th><th>To</th><th>Amount</th><th>Status</th><th></th></tr></thead><tbody>
+@foreach (var t in tr.EnumerateArray()) { var st = t.GetProperty("status").GetString();
+  <tr><td>@t.GetProperty("id").GetString()</td><td>@t.GetProperty("to").GetString()</td><td>@t.GetProperty("amount").GetDecimal().ToString("C2", new System.Globalization.CultureInfo("en-IE"))</td><td><span class="ab-status @st">@st</span></td>
+  <td>@if (st == "pending") { <form method="post" asp-action="Approve" asp-route-id="@t.GetProperty("id").GetString()"><button class="ab-btn primary">Approve</button></form> }</td></tr> }
+</tbody></table></div>

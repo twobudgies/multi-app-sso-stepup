@@ -1,0 +1,13 @@
+@model Pending
+<div class="ab-modal-backdrop" style="position:static;background:none;min-height:60vh">
+  <div class="ab-modal">
+    <h2>Extra verification needed</h2>
+    <p><b>@Model.Title</b> is a sensitive action. Being signed in is not enough: the bank needs proof that it is really you, right now.</p>
+    <div class="ab-note">@(Model.Reason.Contains("LoA1") ? "So far you signed in with a password only (LoA1). This action needs password + authenticator code (LoA2)." : Model.Reason)</div>
+    <ol class="ab-steps"><li>You go to the secure login page</li><li>Enter the 6-digit code from your authenticator app</li><li>You come back here and the action completes. The proof counts for @(ViewBag.Window) seconds, in all Acme Bank apps</li></ol>
+    <div class="actions">
+      <form method="post" asp-action="Cancel"><button class="ab-btn">Not now</button></form>
+      <form method="post" asp-action="Go"><button class="ab-btn primary">Verify with authenticator</button></form>
+    </div>
+  </div>
+</div>

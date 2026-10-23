@@ -1,0 +1,8 @@
+@{ var tr = (JsonElement)ViewBag.Transfers; var lim = (JsonElement)ViewBag.Limits; int pending = tr.EnumerateArray().Count(t => t.GetProperty("status").GetString() == "pending"); }
+<h1>Back Office</h1>
+<p class="lead">Administration for Acme Bank staff: limits, approvals and users.</p>
+<div class="ab-grid">
+  <div class="ab-card"><div class="tag">Daily transfer limit</div><div class="ab-amount">@lim.GetProperty("dailyTransferLimit").GetDecimal().ToString("C0", new System.Globalization.CultureInfo("en-IE"))</div><a class="ab-btn" href="/BackOffice/Limits">Change limit</a></div>
+  <div class="ab-card"><div class="tag">Waiting for approval</div><div class="ab-amount">@pending</div><a class="ab-btn" href="/BackOffice/Approvals">Review transfers</a></div>
+  <div class="ab-card"><div class="tag">Customers</div><div class="ab-amount">3</div><a class="ab-btn" href="/BackOffice/Users">View users</a></div>
+</div>
