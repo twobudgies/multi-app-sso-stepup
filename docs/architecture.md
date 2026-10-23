@@ -2,6 +2,18 @@
 
 > Status: design (not yet implemented). Local IdP is Keycloak; see [BRIEF](../agent/BRIEF.md) for decisions.
 
+## Demo domain: Acme Bank
+
+The three apps are parts of one fictional bank, "Acme Bank" (fake data, no real brands), so the demo tells one story:
+
+| App | Acme Bank role |
+|-----|----------------|
+| React | Customer Portal (accounts, balances, profile) |
+| Angular | Payments and Transfers (send money, add payee) |
+| MVC | Back Office / Admin (limits, approvals, user management) |
+
+All use one shared API. Step-up window: 60 s (`STEPUP_MAX_AGE_SECONDS`), clock-skew leeway 5 s. See [step-up-actions.md](step-up-actions.md).
+
 ## Parts
 
 | Part | Type | Talks to IdP as |

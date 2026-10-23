@@ -16,6 +16,9 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
 - [x] P0-4: `docs/windows-setup.md` for the Windows demo laptop (Docker Desktop + WSL2, .NET SDK, Node, free ports, clock sync, git line endings); mark steps only reviewed, not run, since dev is on macOS
 - [x] GATE-P0: Phase 0 report, then stop
 
+## Phase R: retrofit (architect review of Phase 0)
+- [x] R-1..R-6: README repo map, docs index and progress-log, ADR-0001/0002, Acme Bank and 60 s consistency in design docs, narrowed gitleaks allowlist, progress-log noted in agent/README.md
+
 ## Phase 1: Keycloak IdP (reproducible)
 - [ ] P1-1: `docker-compose.yml` for Keycloak with an imported realm JSON in `idp/keycloak/`
   - test users only, no real data; secrets via `${ENV}` placeholders from `.env`
