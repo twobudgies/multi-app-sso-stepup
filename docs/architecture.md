@@ -89,6 +89,10 @@ Signature, `iss`, `aud` (must name the API), `exp`, then the *policy* for that a
 - Each app clears its own session/tokens, then redirects to `end_session_endpoint`, which ends the Keycloak session.
 - Other apps are **not** told (back/front-channel logout is out of scope). Their local sessions and tokens keep working until the access token expires and refresh fails (see [token-lifecycle.md](token-lifecycle.md)), which is at most the IdP's refresh/session lifetime.
 
+## Swapping the IdP
+
+Keycloak is only the local default. IdP-specific behavior sits behind profiles and an adapter, so Entra ID, Okta, Cognito or another OIDC provider can be connected without changing app logic. See [idp-adapter.md](idp-adapter.md).
+
 ## Where config comes from
 
 Everything IdP-specific (issuer, client ids, scopes, `acr` names) comes from environment variables (see `.env.example`). No real URLs, tenants or secrets in the repo.

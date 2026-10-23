@@ -14,7 +14,7 @@ State any assumption before relying on it and flag anything that needs the owner
    - **App MVC**: ASP.NET Core MVC (C#), server-rendered
 2. Each client exposes at least one **sensitive action** that requires fresh MFA even with a valid SSO session.
 3. Step-up is enforced **server-side**, from validated token claims (`acr`, `auth_time`), never from a client-side flag.
-4. IdP-specific behavior is isolated behind config/adapter so a second IdP can be added without touching app logic.
+4. **IdP-agnostic by design.** Anyone can connect another IdP (Entra ID, Okta, AWS Cognito, generic OIDC) by adding a profile file and environment variables, without touching app logic. IdP differences (how to request step-up, which claims carry level and auth time, how the API challenges) live in profiles under `idp/profiles/`, loaded by a small adapter. See `docs/idp-adapter.md`.
 
 ## Non-goals
 - Production hardening, HA, user provisioning/SCIM.
@@ -36,6 +36,8 @@ State any assumption before relying on it and flag anything that needs the owner
 | 3 | Step-up freshness | **Shared window** across all apps | Owner |
 | 4 | Front/back-channel logout | Out of scope; local + RP-initiated logout only, document the rest | Owner |
 | 5 | Entra/Okta tenant | None available. Config template and docs only, untested | Default assumed |
+| 7 | IdP flexibility | Profile-driven adapter from the start (Phase 2), not bolted on in Phase 5. Only Keycloak is tested; other profiles are templates | Owner (requirement); phase order changed by agent |
+| 8 | "AWS IdP" | Assumed Amazon Cognito; IAM Identity Center is not a general sign-in IdP for custom apps | **Pending owner confirmation** |
 | 6 | Tests | No E2E or automated test suites. Verify by code review and a manual checklist | Owner |
 
 ## Architecture (recommended, needs owner confirmation)
@@ -45,6 +47,11 @@ SPAs are public clients: anything they check is client-side and bypassable. To k
 - MVC: confidential client, server-side session behind an `HttpOnly`, `Secure`, `SameSite=Lax` cookie (documented http-localhost dev exception).
 - Shared freshness comes for free: the API judges every request from the token's `auth_time`/`acr`, and the IdP session is shared.
 - Trade-off to document in an ADR: tokens in browser JS are weaker than a BFF pattern (server holds tokens, SPA gets a cookie). BFF is the production-grade alternative, left out of the PoC to keep scope small.
+
+## IdP adapter rules
+- No app code may reference Keycloak (or any single IdP) by name, claim name or URL; go through the adapter.
+- The API's evaluator is authoritative. If a profile cannot express a safe freshness check (no `auth_time`, no equivalent), refuse to start for actions with a max age instead of skipping the check.
+- Never claim a provider works unless it was tested against a real tenant.
 
 ## Known IdP caveats to verify, not assume
 - Keycloak does not emit `amr` natively; use a mapper or document that only `acr` is relied on.
