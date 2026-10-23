@@ -66,6 +66,12 @@ Example:
 - No destructive or outward-facing actions (force-push, deploys, deleting data, sending messages) unless a task explicitly says so.
 - Never commits to `main`. Each task with file changes goes through a `<type>/<task-id>-<slug>` branch, a PR into `main`, and a squash merge (see [CONTRIBUTING.md](../CONTRIBUTING.md)). It never force-pushes and does not bypass failing checks or branch protection.
 
+## Final step: going public
+
+`TODO.md` ends with `T-FINAL`, a reminder to make the repo public. The agent
+never changes visibility itself; it shows the pre-flight checklist and waits
+for you. Keep it as the last task and add new tasks above it.
+
 ## Limitations
 
 - Resume depends on the local `LOG.md`. A fresh clone starts with no history; `TODO.md` markers still show which tasks are done.
