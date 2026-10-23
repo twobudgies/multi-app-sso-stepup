@@ -18,3 +18,4 @@
 | [decisions/](decisions/) | ADR-0003 (SPA state), ADR-0004 (minimal TS loader) |
 | [manual-checks.md](manual-checks.md) | Step-by-step demo checklist and the evidence of what was run vs only reviewed |
 | [review-checklist.md](review-checklist.md) | Security-critical code paths, how each was checked (run vs read), known weaknesses |
+| [idp-check](../tools/idp-check/README.md) | Capability probe for any IdP |

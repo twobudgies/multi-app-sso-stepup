@@ -6,7 +6,7 @@ export interface IdpProfile {
   capabilities: { acrValues: boolean; maxAge: boolean; promptLogin: boolean; claimsParam: boolean; emitsAuthTime: boolean; emitsAmr: boolean };
   level: { claim: string; type: 'string' | 'array'; map: Record<string, string[]> };
   authTime: { claim: string | null };
-  stepUpRequest: { acrValues: Record<string, string>; maxAge: boolean; promptLogin: 'never' | 'when-stale' | 'always' };
+  stepUpRequest: { acrValues: Record<string, string>; maxAge: boolean; promptLogin: 'never' | 'when-stale' | 'always'; claimsParam?: string };
 }
 
 /** Picks a profile by name from a map of imported JSON files and validates it (fails fast). */
@@ -16,7 +16,7 @@ export function selectProfile(all: Record<string, unknown>, name: string): IdpPr
   if (!hit) throw new Error(`IdP profile "${name}" not found in idp/profiles/`);
   const p = ((hit[1] as { default?: unknown }).default ?? hit[1]) as IdpProfile;
   if (!p.name || !p.level?.claim || !p.level.map?.['LoA1'] || !p.level.map?.['LoA2']) throw new Error(`IdP profile "${name}" is invalid`);
-  if (!p.capabilities.claimsParam && !p.stepUpRequest?.acrValues?.['LoA2']) throw new Error(`IdP profile "${name}" cannot request LoA2`);
+  if (!p.stepUpRequest?.acrValues?.['LoA2'] && !(p.capabilities.claimsParam && p.stepUpRequest?.claimsParam)) throw new Error(`IdP profile "${name}" cannot request LoA2`);
   return p;
 }
 
@@ -26,6 +26,7 @@ export function stepUpParams(p: IdpProfile, maxAgeSeconds?: number): Record<stri
   if (p.capabilities.acrValues && p.stepUpRequest.acrValues['LoA2']) out['acr_values'] = p.stepUpRequest.acrValues['LoA2'];
   if (p.capabilities.maxAge && p.stepUpRequest.maxAge && maxAgeSeconds !== undefined) out['max_age'] = String(maxAgeSeconds);
   if (p.capabilities.promptLogin && p.stepUpRequest.promptLogin === 'always') out['prompt'] = 'login';
+  if (p.capabilities.claimsParam && p.stepUpRequest.claimsParam) out['claims'] = p.stepUpRequest.claimsParam.replace('{level}', p.level.map['LoA2']?.[0] ?? '');
   return out;
 }
 

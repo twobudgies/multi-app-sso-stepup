@@ -36,6 +36,18 @@ npm run dev:mvc         # terminal 5, port 5200
 
 Open http://localhost:5300 and sign in as `alice` / `alice-dev-only`. Authenticator code: add the Base32 secret from `docs/idp-keycloak.md` to a phone app. Reset the IdP with `npm run reset`. Full checklist: `docs/manual-checks.md`.
 
+## Tested IdPs
+
+| IdP | Status |
+|-----|--------|
+| Keycloak 26.0 (Docker, local) | **Tested**: login, SSO, step-up, expiry, logout (see `docs/manual-checks.md`) |
+| Microsoft Entra ID | Template only, **untested** (`idp/profiles/entra.json`); API refuses a max-age policy with it |
+| Okta | Template only, **untested** |
+| Amazon Cognito | Template only, **untested** |
+| Any other OIDC IdP | `generic.json`: same values as Keycloak, **untested** elsewhere |
+
+No cloud tenant was available, so nothing but Keycloak has ever been run.
+
 ## Documentation
 
 Start at [`docs/README.md`](docs/README.md): architecture and IdP communication, token refresh, and the step-up actions.

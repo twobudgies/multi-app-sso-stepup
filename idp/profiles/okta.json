@@ -1,0 +1,48 @@
+{
+  "name": "okta",
+  "tested": false,
+  "_status": "TEMPLATE, UNTESTED: built from Okta documentation, never run against an org.",
+  "sources": [
+    "https://developer.okta.com/docs/guides/step-up-authentication/main/"
+  ],
+  "notes": [
+    "acr_values urn:okta:loa:2fa:any asks for any two factors. Unsupported values are ignored by Okta, so the client and API must still check the returned acr.",
+    "max_age is supported; max_age=0 forces re-authentication (Classic Engine uses max_age=1).",
+    "acr and auth_time appear in the ID token and the documented access token example. Okta uses error=unmet_authentication_requirements on the callback when the level cannot be met.",
+    "The exact acr strings in issued tokens must be confirmed against a real org."
+  ],
+  "capabilities": {
+    "acrValues": true,
+    "maxAge": true,
+    "promptLogin": true,
+    "claimsParam": false,
+    "emitsAuthTime": true,
+    "emitsAmr": true
+  },
+  "level": {
+    "claim": "acr",
+    "type": "string",
+    "map": {
+      "LoA1": [
+        "urn:okta:loa:1fa:any",
+        "urn:okta:loa:1fa:pwd"
+      ],
+      "LoA2": [
+        "urn:okta:loa:2fa:any"
+      ]
+    }
+  },
+  "authTime": {
+    "claim": "auth_time"
+  },
+  "stepUpRequest": {
+    "acrValues": {
+      "LoA2": "urn:okta:loa:2fa:any"
+    },
+    "maxAge": true,
+    "promptLogin": "never"
+  },
+  "challenge": {
+    "type": "rfc9470"
+  }
+}

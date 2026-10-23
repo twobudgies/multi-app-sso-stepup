@@ -1,0 +1,46 @@
+{
+  "name": "entra",
+  "tested": false,
+  "_status": "TEMPLATE, UNTESTED: built from Microsoft documentation, never run against a tenant.",
+  "sources": [
+    "https://learn.microsoft.com/en-us/entra/identity-platform/developer-guide-conditional-access-authentication-context",
+    "https://learn.microsoft.com/en-us/entra/identity-platform/v2-conditional-access-dev-guide"
+  ],
+  "notes": [
+    "Step-up uses a Conditional Access authentication context (C1..C99) requested with the `claims` parameter, not acr_values. The id must match a context created in the tenant (docs advise not hard-coding it).",
+    "The token carries the satisfied contexts in the optional `acrs` claim (array); the resource must opt in to the optional claim.",
+    "The API challenge is the Entra claims challenge: error=\"insufficient_claims\" with a base64 `claims` value and cc_type=\"authcontext\".",
+    "The cited pages do not document max_age or an auth_time guarantee for this flow. Freshness is normally governed by the sign-in frequency control of the Conditional Access policy. emitsAuthTime is therefore false, so the API REFUSES to start with a max-age policy (see docs/idp-adapter.md, freshness problem)."
+  ],
+  "capabilities": {
+    "acrValues": false,
+    "maxAge": false,
+    "promptLogin": true,
+    "claimsParam": true,
+    "emitsAuthTime": false,
+    "emitsAmr": true
+  },
+  "level": {
+    "claim": "acrs",
+    "type": "array",
+    "map": {
+      "LoA1": [],
+      "LoA2": [
+        "c1"
+      ]
+    }
+  },
+  "authTime": {
+    "claim": null
+  },
+  "stepUpRequest": {
+    "acrValues": {},
+    "maxAge": false,
+    "promptLogin": "never",
+    "claimsParam": "{\"id_token\":{\"acrs\":{\"essential\":true,\"value\":\"{level}\"}}}"
+  },
+  "challenge": {
+    "type": "entra-claims",
+    "acrsValue": "c1"
+  }
+}
