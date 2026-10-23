@@ -70,9 +70,12 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
 - [ ] GATE-P6: Phase 6 report, then stop
 
 ## Phase 7: Presentation for the office team (after everything else is done)
-- [ ] P7-0: Ask the owner 4 quick questions before building: audience (developers, managers, mixed), length (e.g. 15/30/45 min), live demo or screenshots, any company template/branding. Mark `[!]` until answered
+- [ ] P7-0: Presentation requirements (owner answered 2026-10-23): audience **mixed** (developers + managers), **45 min** total, **live demo** included. Still open: company template/branding. Ask once; if none, use a clean neutral design
+  - Time plan: ~5 min problem + SSO basics, ~8 min architecture/tokens/step-up concepts, **~12 min live demo**, ~5 min IdP flexibility, ~5 min security/trade-offs/what was verified, ~10 min Q&A and buffer
+  - Mixed audience: each technical slide has a one-line plain-language takeaway for managers; deep detail goes to the appendix, not the main flow
+  - Live demo needs a safety net: `demo/run-demo.md` with exact steps, a reset script to restore the clean state (`docker compose down -v && up`), a pre-demo checklist (ports, TOTP app or documented test code, clock sync), and **backup screenshots or a short screen recording** of every demo step in case it fails live
 - [ ] P7-1: Write `docs/presentation/outline.md`: story arc, one message per slide, speaker notes. Suggested arc: the problem (many logins, risky actions) -> SSO explained simply -> architecture (IdP, 3 apps, shared API) -> token journey and refresh -> step-up MFA with a live-style walkthrough -> IdP-agnostic adapter (Keycloak tested; Entra/Okta/Cognito as templates) -> security decisions and trade-offs (PKCE, API-side enforcement, tokens in memory vs BFF) -> what was verified vs only reviewed -> limitations and next steps -> Q&A
-- [ ] P7-2: Build the deck as a `.pptx` (use the pptx skill): 15-20 slides, clean visual design, diagrams reused from `docs/` (redrawn for slides), speaker notes on every slide, a demo-script slide with exact steps, an appendix with glossary and FAQ
+- [ ] P7-2: Build the deck as a `.pptx` (use the pptx skill): about 16-18 main slides (fits 45 min with a 12-min live demo) plus appendix, clean visual design, diagrams reused from `docs/` (redrawn for slides), speaker notes on every slide, a demo-script slide with exact steps, an appendix with glossary and FAQ
   - content must come from the real, finished code and docs; no invented results, metrics or claims about untested IdPs
   - no real secrets, tenant IDs or IdP URLs on any slide
   - commit the deck under `docs/presentation/`
