@@ -1,0 +1,7 @@
+# Dev-only fake values are allowlisted explicitly here (see SECURITY.md).
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Fake dev-only values and placeholders"
+paths = ['''\.env\.example$''']

@@ -9,7 +9,7 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
   - `.gitignore` additionally covers `*.pem`, `*.key`, IdP exports (`*-export.json`, but NOT the checked-in realm file), `*.log`, `node_modules/`, `bin/`, `obj/`, `dist/`
   - `.env.example` with placeholders only; README marked "PoC, not production-hardened"
   - done when: files exist, `git check-ignore` confirms `.env` and `*.pem` are ignored
-- [ ] P0-2: gitleaks pre-commit hook and CI
+- [x] P0-2: gitleaks pre-commit hook and CI
   - `.pre-commit-config.yaml` with gitleaks; `.github/workflows/gitleaks.yml` running `gitleaks detect` over full history (`fetch-depth: 0`)
   - done when: if gitleaks is installed locally, a fake secret in a temp file is rejected by `gitleaks protect --staged`; otherwise say it was not run
 - [ ] P0-3: Update `SECURITY.md` on how test credentials are handled (fake dev-only values, documented, allowlisted)
