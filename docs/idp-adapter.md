@@ -2,6 +2,8 @@
 
 > Status: C# side implemented in `packages/dotnet/IdpProfile` (loader, evaluator, request builder, challenge writer), used by the API; TypeScript side comes with the SPAs. Profile files: `idp/profiles/`, schema `profile.schema.json`. Only **Keycloak** will be tested. The Cognito, Entra ID and Okta profiles are templates built from provider documentation and must be verified against a real tenant before anyone relies on them.
 
+> Implementation note: the TypeScript side (`packages/idp-profile`) only **builds requests** and parses challenges; **enforcement is server-side** in the API (see [ADR-0004](decisions/0004-minimal-ts-profile-loader.md)).
+
 ## Goal
 
 App code (React, Angular, MVC, API) never mentions a specific IdP. Connecting a new one means adding **a profile file and environment variables**, not changing app logic.

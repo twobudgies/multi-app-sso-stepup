@@ -6,6 +6,8 @@
     "down": "docker compose down",
     "reset": "docker compose down -v && docker compose up -d",
     "dev:api": "dotnet run --project api",
-    "probe": "node tools/login-probe.mjs"
+    "probe": "node tools/login-probe.mjs",
+    "dev:react": "npm --prefix apps/react run dev",
+    "install:all": "npm --prefix apps/react install"
   }
 }
