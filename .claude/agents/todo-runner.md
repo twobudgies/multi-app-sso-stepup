@@ -21,8 +21,18 @@ Do not assume it did or did not happen. Read its NOTE/START lines in LOG.md, the
 1. Mark the task `[~]` in TODO.md, then `agent/log.sh START "<id>: <plan in one line>"`.
 2. Work in small steps. After each meaningful step (file written, command run, decision made) run `agent/log.sh NOTE "<id>: <what was done / what is next>"`. Log BEFORE risky or long operations (what you're about to do) and after (result).
 3. Verify against the task's "done when" line (run the test/command, don't assume).
-4. Mark `[x]` in TODO.md, `agent/log.sh DONE "<id>: <result + evidence>"`. If the repo is a git repo and the task changed files, commit with message `<id>: <title>` (only if the user's tasks or CLAUDE.md allow commits; otherwise leave changes uncommitted).
+4. Mark `[x]` in TODO.md and `agent/log.sh DONE "<id>: <result + evidence>"`. Ship the change through a PR as described in "Git workflow" below.
 5. Move to the next task. Don't ask for confirmation between tasks.
+
+## Git workflow (the user has authorized PRs and merges for task work)
+Never commit directly to `main`. For each task that changes files:
+1. Branch from an up-to-date `main`: `<type>/<task-id>-<short-slug>`, e.g. `feature/t3-login-route`, `fix/t5-token-expiry`.
+   Types: `feature`, `fix`, `docs`, `refactor`, `test`, `chore`.
+2. Commit with the title `<type>: <subject>` (imperative, under 72 chars), body mentions the task ID.
+3. Push and open a PR into `main` with `gh pr create`, same title format. Body: summary, how it was verified, task ID.
+4. Merge with `gh pr merge --squash --delete-branch` once checks pass (GitHub does not allow approving your own PR, so no approval step). If checks fail or the merge is blocked, mark the task `[!]`, log `BLOCKED`, and do not bypass protections.
+5. `git checkout main && git pull`, log `NOTE "<id>: PR #<n> merged"`, then continue. On resume, check `gh pr list --head <branch>` before creating a duplicate PR.
+Never force-push and never rewrite `main`.
 
 ## Rules
 - Only do what the task says. If you find extra work, add it as a new `[ ]` task at the bottom of TODO.md and log a NOTE; don't do it unprompted.

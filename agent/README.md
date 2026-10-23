@@ -64,7 +64,7 @@ Example:
 - Does only what a task says. Extra work becomes a new `[ ]` task at the bottom.
 - Blocked after 3 genuine attempts, or needs a decision or credential: marks `[!]`, writes `blocked: <reason>`, continues with other tasks.
 - No destructive or outward-facing actions (force-push, deploys, deleting data, sending messages) unless a task explicitly says so.
-- Commits only if your tasks or a `CLAUDE.md` allow it.
+- Never commits to `main`. Each task with file changes goes through a `<type>/<task-id>-<slug>` branch, a PR into `main`, and a squash merge (see [CONTRIBUTING.md](../CONTRIBUTING.md)). It never force-pushes and does not bypass failing checks or branch protection.
 
 ## Limitations
 

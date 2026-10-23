@@ -21,7 +21,7 @@ agent/log.sh                      log helper
 
 ## Contributing
 
-Open an issue before large changes. Do not commit secrets, client secrets or
+Work happens in PRs into `main` using `<type>/<slug>` branches; see [CONTRIBUTING.md](CONTRIBUTING.md). Open an issue before large changes. Do not commit secrets, client secrets or
 tokens, and keep real IdP credentials out of the repo. See [SECURITY.md](SECURITY.md).
 
 ## License
