@@ -1,0 +1,15 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    command: start-dev --import-realm
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-change-me-dev-only}
+      KC_HTTP_PORT: 8080
+      KC_HOSTNAME_STRICT: "false"
+      KC_HEALTH_ENABLED: "true"
+      APP_MVC_CLIENT_SECRET: ${APP_MVC_CLIENT_SECRET:-change-me-dev-only}
+    ports:
+      - "${KEYCLOAK_HTTP_PORT:-8180}:8080"
+    volumes:
+      - ./idp/keycloak/realm.json:/opt/keycloak/data/import/realm.json:ro

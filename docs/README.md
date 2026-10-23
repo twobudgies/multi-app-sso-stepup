@@ -12,3 +12,4 @@
 | [windows-setup.md](windows-setup.md) | Preparing the Windows demo laptop (reviewed only, not run) |
 | [progress-log.md](progress-log.md) | Dated, plain-language journal of every task (committed; `agent/LOG.md` is not) |
 | [decisions/](decisions/) | ADRs: why the repo and ports are laid out the way they are |
+| [idp-keycloak.md](idp-keycloak.md) | The Keycloak realm: users, clients, TOTP, login levels, mappers |

@@ -1,0 +1,378 @@
+{
+  "realm": "stepup",
+  "enabled": true,
+  "displayName": "Acme Bank (dev)",
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "accessTokenLifespan": 300,
+  "browserFlow": "browser-stepup",
+  "attributes": {
+    "acr.loa.map": "{\"1\": 1, \"2\": 2}"
+  },
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA1",
+  "otpPolicyDigits": 6,
+  "otpPolicyPeriod": 30,
+  "users": [
+    {
+      "username": "alice",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "alice@example.test",
+      "firstName": "Alice",
+      "lastName": "Demo",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "alice-dev-only",
+          "temporary": false
+        },
+        {
+          "type": "otp",
+          "userLabel": "demo-totp",
+          "secretData": "{\"value\": \"12345678901234567890\"}",
+          "credentialData": "{\"subType\": \"totp\", \"digits\": 6, \"period\": 30, \"algorithm\": \"HmacSHA1\", \"counter\": 0}"
+        }
+      ],
+      "requiredActions": []
+    }
+  ],
+  "clientScopes": [
+    {
+      "name": "acr",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "acr loa level",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-acr-mapper",
+          "config": {
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "profile",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "username",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "username",
+            "claim.name": "preferred_username",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "given name",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "firstName",
+            "claim.name": "given_name",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "family name",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "lastName",
+            "claim.name": "family_name",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "email",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "email",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "email",
+            "claim.name": "email",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "api-audience",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "stepup-api-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.custom.audience": "stepup-api",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "auth-time",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "auth-time-note",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "config": {
+            "user.session.note": "AUTH_TIME",
+            "claim.name": "auth_time",
+            "jsonType.label": "long",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "app-react",
+      "name": "Customer Portal (React)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "http://localhost:5300/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "defaultClientScopes": [
+        "acr",
+        "profile",
+        "email",
+        "api-audience",
+        "auth-time"
+      ],
+      "optionalClientScopes": [],
+      "attributes": {
+        "post.logout.redirect.uris": "http://localhost:5300/*",
+        "access.token.lifespan": "300",
+        "pkce.code.challenge.method": "S256"
+      }
+    },
+    {
+      "clientId": "app-angular",
+      "name": "Payments and Transfers (Angular)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "http://localhost:5400/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "defaultClientScopes": [
+        "acr",
+        "profile",
+        "email",
+        "api-audience",
+        "auth-time"
+      ],
+      "optionalClientScopes": [],
+      "attributes": {
+        "post.logout.redirect.uris": "http://localhost:5400/*",
+        "access.token.lifespan": "300",
+        "pkce.code.challenge.method": "S256"
+      }
+    },
+    {
+      "clientId": "app-mvc",
+      "name": "Back Office (MVC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "http://localhost:5200/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "defaultClientScopes": [
+        "acr",
+        "profile",
+        "email",
+        "api-audience",
+        "auth-time"
+      ],
+      "optionalClientScopes": [],
+      "attributes": {
+        "post.logout.redirect.uris": "http://localhost:5200/*",
+        "access.token.lifespan": "300",
+        "pkce.code.challenge.method": "S256"
+      },
+      "secret": "${APP_MVC_CLIENT_SECRET}"
+    }
+  ],
+  "authenticationFlows": [
+    {
+      "alias": "browser-stepup",
+      "description": "Browser flow with levels of assurance (LoA1 password, LoA2 password + TOTP)",
+      "providerId": "basic-flow",
+      "topLevel": true,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-cookie",
+          "requirement": "ALTERNATIVE",
+          "priority": 10,
+          "userSetupAllowed": false,
+          "autheticatorFlow": false
+        },
+        {
+          "authenticatorFlow": true,
+          "requirement": "ALTERNATIVE",
+          "priority": 20,
+          "flowAlias": "stepup-forms",
+          "userSetupAllowed": false
+        }
+      ]
+    },
+    {
+      "alias": "stepup-forms",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticatorFlow": true,
+          "requirement": "CONDITIONAL",
+          "priority": 10,
+          "flowAlias": "loa1-password",
+          "userSetupAllowed": false
+        },
+        {
+          "authenticatorFlow": true,
+          "requirement": "CONDITIONAL",
+          "priority": 20,
+          "flowAlias": "loa2-totp",
+          "userSetupAllowed": false
+        }
+      ]
+    },
+    {
+      "alias": "loa1-password",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "conditional-level-of-authentication",
+          "authenticatorConfig": "loa1-cond",
+          "requirement": "REQUIRED",
+          "priority": 10,
+          "userSetupAllowed": false
+        },
+        {
+          "authenticator": "auth-username-password-form",
+          "requirement": "REQUIRED",
+          "priority": 20,
+          "userSetupAllowed": false
+        }
+      ]
+    },
+    {
+      "alias": "loa2-totp",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "conditional-level-of-authentication",
+          "authenticatorConfig": "loa2-cond",
+          "requirement": "REQUIRED",
+          "priority": 10,
+          "userSetupAllowed": false
+        },
+        {
+          "authenticator": "auth-otp-form",
+          "requirement": "REQUIRED",
+          "priority": 20,
+          "userSetupAllowed": false
+        }
+      ]
+    }
+  ],
+  "authenticatorConfig": [
+    {
+      "alias": "loa1-cond",
+      "config": {
+        "loa-condition-level": "1",
+        "loa-max-age": "36000"
+      }
+    },
+    {
+      "alias": "loa2-cond",
+      "config": {
+        "loa-condition-level": "2",
+        "loa-max-age": "300"
+      }
+    }
+  ]
+}

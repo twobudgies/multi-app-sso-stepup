@@ -20,14 +20,14 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
 - [x] R-1..R-6: README repo map, docs index and progress-log, ADR-0001/0002, Acme Bank and 60 s consistency in design docs, narrowed gitleaks allowlist, progress-log noted in agent/README.md
 
 ## Phase 1: Keycloak IdP (reproducible)
-- [ ] P1-1: `docker-compose.yml` for Keycloak with an imported realm JSON in `idp/keycloak/`
+- [x] P1-1: `docker-compose.yml` for Keycloak with an imported realm JSON in `idp/keycloak/`
   - test users only, no real data; secrets via `${ENV}` placeholders from `.env`
   - done when: `docker compose up` yields a working realm with no manual clicks (run it if Docker is available)
-- [ ] P1-2: Clients `app-react` and `app-angular` (public, PKCE S256), `app-mvc` (confidential), and an audience for the API
-- [ ] P1-3: TOTP second factor; pre-seed a documented fake TOTP secret for the test user so no manual enrolment is needed (flag if Keycloak import cannot do this)
-- [ ] P1-4: Authentication flow with levels of assurance: LoA1 = password, LoA2 = password + TOTP, mapped to `acr`
-- [ ] P1-5: `acr` and `auth_time` in ID **and access** tokens; decide on `amr`; document the mappers in `docs/idp-keycloak.md`
-- [ ] GATE-P1: Phase 1 report, then stop
+- [x] P1-2: Clients `app-react` and `app-angular` (public, PKCE S256), `app-mvc` (confidential), and an audience for the API
+- [x] P1-3: TOTP second factor; pre-seed a documented fake TOTP secret for the test user so no manual enrolment is needed (flag if Keycloak import cannot do this)
+- [x] P1-4: Authentication flow with levels of assurance: LoA1 = password, LoA2 = password + TOTP, mapped to `acr`
+- [x] P1-5: `acr` and `auth_time` in ID **and access** tokens; decide on `amr`; document the mappers in `docs/idp-keycloak.md`
+- [x] GATE-P1: Phase 1 report, then stop
 
 ## Phase 2: SSO for three clients and a shared API
 - [ ] P2-0: IdP adapter foundation (before any app code), per `docs/idp-adapter.md`
