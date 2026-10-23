@@ -32,7 +32,7 @@ The profile translates between those and the provider's claims and parameters.
 ```mermaid
 flowchart LR
   subgraph App code - same for every IdP
-    P[Step-up policy: LoA2, max age 120s]
+    P[Step-up policy: LoA2, max age 60s]
     E[Evaluator]
     B[Request builder]
   end

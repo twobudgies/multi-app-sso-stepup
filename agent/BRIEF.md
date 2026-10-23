@@ -75,3 +75,8 @@ SPAs are public clients: anything they check is client-side and bypassable. To k
 - Use forward-slash paths in config, avoid case-only file name differences, and document Docker Desktop (WSL2) setup, free ports and the clock-sync requirement for TOTP in `docs/windows-setup.md`.
 - `agent/log.sh` is bash and only used by the agent on macOS (on Windows use Git Bash or WSL).
 - The company PPT template must NOT be committed (it may be confidential); keep it in a git-ignored folder.
+
+## Dev machine findings (checked 2026-10-23, macOS 15.7, x86_64)
+- Present: Docker 29.9 (daemon running) + Compose v5, .NET SDK 10 (also 8), git, gh, Python 3.
+- Missing: Node.js/npm (needed for React and Angular), gitleaks, pre-commit, trufflehog, LibreOffice (to render slides for the visual check).
+- Port conflicts: 5000 is used by macOS (AirPlay Receiver), so do not use 5000/5001 for the API or MVC; 8080 is already used by a running Docker container, so Keycloak must use another host port (e.g. 8180) or that container must be stopped. Choose ports once, document them in `.env.example` and keep them identical on Windows.
