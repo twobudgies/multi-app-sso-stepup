@@ -7,3 +7,5 @@ Run: `cd tools/e2e && npm install && npm run setup && npm run run` (takes about 
 Note: Keycloak rejects reusing a TOTP code within 30 s, so wait half a minute between runs. The script computes TOTP codes from the public fake demo seed.
 
 `negative.mjs` simulates a misbehaving IdP (error on return, IdP ignoring `acr_values`) by rewriting the browser's authorize request. It needs a fresh API (`npm run dev:api` restarted) so a pending transfer exists. Same TOTP note applies.
+
+`gif.mjs` (`npm run gif`) records the README animation `docs/img/how-it-works.gif` (login, step-up, SSO, timer, expiry, step-up again, with captions). It samples the countdown about every 8 s, so the timer segment is sped up. Takes about 2 minutes; `GIF_FRAMES=dir` also saves each frame as a PNG. Same TOTP note applies.
