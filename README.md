@@ -6,6 +6,20 @@ Proof of concept: single sign-on across three apps (React, Angular, ASP.NET Core
 
 Configuration: copy `.env.example` to `.env` (git-ignored) and edit. The example holds placeholders only.
 
+## How it works (animation)
+
+![Login, SSO, step-up, timer, expired, step-up again](docs/img/how-it-works.gif)
+
+Recorded from a real run of the three apps against Keycloak (the timer part is sped up):
+1. **Login:** one password login at the identity provider gives level LoA1.
+2. **Step-up:** a risky action (changing the e-mail) is blocked until the user proves a second factor (authenticator code), which gives LoA2 and starts a 1-minute timer.
+3. **SSO:** the Payments and Back Office apps open with no login prompt, and a large transfer inside the window needs no second code.
+4. **Timer:** the session panel counts the step-up window down.
+5. **Expired:** at zero the same transfer is blocked again.
+6. **Step-up again:** because the old login is past the window, Keycloak asks for the password again and then a fresh code; a new 1-minute timer starts.
+
+To re-record it with the stack running: `npm --prefix tools/e2e install && npm --prefix tools/e2e run setup && npm --prefix tools/e2e run gif` (about 2 minutes; wait 30 s between runs because a used authenticator code is rejected).
+
 ## Repo map (monorepo)
 
 | Folder | Purpose | Port | Status |
