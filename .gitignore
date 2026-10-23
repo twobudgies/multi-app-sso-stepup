@@ -25,3 +25,4 @@ node_modules/
 bin/
 obj/
 dist/
+tools/e2e/out/

@@ -1,6 +1,6 @@
 # Architecture: how the apps talk to the IdP
 
-> Status: design (not yet implemented). Local IdP is Keycloak; see [BRIEF](../agent/BRIEF.md) for decisions.
+> Status: implemented for Keycloak (see [demo-domain.md](demo-domain.md), [api.md](api.md), [idp-keycloak.md](idp-keycloak.md)); remaining differences are reconciled in P6-1. Local IdP is Keycloak; see [BRIEF](../agent/BRIEF.md) for decisions.
 
 ## Demo domain: Acme Bank
 
@@ -108,3 +108,7 @@ Keycloak is only the local default. IdP-specific behavior sits behind profiles a
 ## Where config comes from
 
 Everything IdP-specific (issuer, client ids, scopes, `acr` names) comes from environment variables (see `.env.example`). No real URLs, tenants or secrets in the repo.
+
+
+## Logout (implemented)
+Each app has local sign-out plus RP-initiated logout at the IdP (`end_session_endpoint` with `id_token_hint`). Ending the IdP session means the other apps ask for a login the next time they load or call the API. Back-channel and front-channel logout are out of scope by owner decision; an open tab in another app keeps its in-memory token until it expires (5 min) or reloads. Verified by running: sign-out in React, then Angular shows the IdP login page.
