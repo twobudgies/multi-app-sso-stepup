@@ -1,6 +1,6 @@
 # IdP adapter: connecting any identity provider
 
-> Status: design (not yet implemented). Only **Keycloak** will be tested. The Cognito, Entra ID and Okta profiles are templates built from provider documentation and must be verified against a real tenant before anyone relies on them.
+> Status: C# side implemented in `packages/dotnet/IdpProfile` (loader, evaluator, request builder, challenge writer), used by the API; TypeScript side comes with the SPAs. Profile files: `idp/profiles/`, schema `profile.schema.json`. Only **Keycloak** will be tested. The Cognito, Entra ID and Okta profiles are templates built from provider documentation and must be verified against a real tenant before anyone relies on them.
 
 ## Goal
 

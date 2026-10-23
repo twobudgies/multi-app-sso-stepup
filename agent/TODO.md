@@ -30,7 +30,7 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
 - [x] GATE-P1: Phase 1 report, then stop
 
 ## Phase 2: SSO for three clients and a shared API
-- [ ] P2-0: IdP adapter foundation (before any app code), per `docs/idp-adapter.md`
+- [x] P2-0: IdP adapter foundation (before any app code), per `docs/idp-adapter.md`
   - define the profile JSON schema and `idp/profiles/keycloak.json` + `generic.json`; env vars `IDP_PROFILE`, `IDP_ISSUER` in `.env.example`
   - profile loader with fail-fast validation (TypeScript for SPAs, C# for API/MVC, same profile file)
   - request builder and evaluator interfaces; no app code may name Keycloak
@@ -46,7 +46,7 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
 - [ ] P2-1b: Customer Portal UI in `apps/react` per P2-1a (accounts, balances, profile, nav bar, session panel)
 - [ ] P2-1c: Payments and Transfers UI in `apps/angular` per P2-1a (send money, add payee, nav bar, session panel)
 - [ ] P2-1d: Back Office UI in `apps/mvc` per P2-1a (limits, approvals, user management, nav bar, session panel)
-- [ ] P2-2: API: JWT bearer validation (JWKS with caching/rotation, `iss`, `aud`, `exp`); `GET /me`, `POST /sensitive/{app}` (no policy yet)
+- [x] P2-2: API: JWT bearer validation (JWKS with caching/rotation, `iss`, `aud`, `exp`); `GET /me`, `POST /sensitive/{app}` (no policy yet)
 - [ ] P2-3: MVC: Authorization Code + PKCE, `state` and `nonce` verified, server-side session, cookie flags, dev-mode exception documented
 - [ ] P2-4: React: Authorization Code + PKCE (`oidc-client-ts`), in-memory token storage, `state`/`nonce` verified
 - [ ] P2-5: Angular: Authorization Code + PKCE (`angular-oauth2-oidc` or equivalent), in-memory token storage, `state`/`nonce` verified
@@ -55,8 +55,8 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
 - [ ] GATE-P2: Phase 2 report, then stop
 
 ## Phase 3: Step-up MFA
-- [ ] P3-1: Policy per sensitive action (use the table in `docs/step-up-actions.md`; owner confirmed the actions and set **1 minute for all**; read the value from config/env `STEPUP_MAX_AGE_SECONDS`, default 60; use a small clock-skew leeway such as 5 s because the window is short) (required `acr`, max age, e.g. LoA2 and 5 min) in one config file the API reads
-- [ ] P3-2: API enforcement via the adapter evaluator (level + auth time from the profile, not hard-coded `acr`/`auth_time`); on failure return the RFC 9470 `401` challenge and do NOT perform the action
+- [x] P3-1: Policy per sensitive action (use the table in `docs/step-up-actions.md`; owner confirmed the actions and set **1 minute for all**; read the value from config/env `STEPUP_MAX_AGE_SECONDS`, default 60; use a small clock-skew leeway such as 5 s because the window is short) (required `acr`, max age, e.g. LoA2 and 5 min) in one config file the API reads
+- [x] P3-2: API enforcement via the adapter evaluator (level + auth time from the profile, not hard-coded `acr`/`auth_time`); on failure return the RFC 9470 `401` challenge and do NOT perform the action
 - [ ] P3-3: Clients (via the adapter request builder) handle the challenge: new authorization request with `acr_values`, `max_age`, `prompt=login` where needed; originating action and return URL kept server-side (MVC session) or in memory keyed by `state` (SPAs); return URL allow-listed, no open redirect
 - [ ] P3-4: On return, re-validate the new token and let the API re-check `acr`/`auth_time` before the action resumes (never assume the IdP honored the request)
 - [ ] P3-5: Failure paths: user cancels MFA, IdP ignores `acr_values`, token `acr` lower than requested, clock skew

@@ -1,0 +1,8 @@
+{
+  "name": "generic",
+  "tested": false,
+  "capabilities": { "acrValues": true, "maxAge": true, "promptLogin": true, "claimsParam": false, "emitsAuthTime": true, "emitsAmr": false },
+  "level": { "claim": "acr", "type": "string", "map": { "LoA1": ["1"], "LoA2": ["2"] } },
+  "authTime": { "claim": "auth_time" },
+  "stepUpRequest": { "acrValues": { "LoA2": "2" }, "maxAge": true, "promptLogin": "when-stale" }
+}

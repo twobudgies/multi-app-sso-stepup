@@ -13,3 +13,4 @@
 | [progress-log.md](progress-log.md) | Dated, plain-language journal of every task (committed; `agent/LOG.md` is not) |
 | [decisions/](decisions/) | ADRs: why the repo and ports are laid out the way they are |
 | [idp-keycloak.md](idp-keycloak.md) | The Keycloak realm: users, clients, TOTP, login levels, mappers |
+| [api.md](api.md) | The shared API: endpoints, token checks, policy, challenge |
