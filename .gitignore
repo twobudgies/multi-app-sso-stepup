@@ -1,0 +1,7 @@
+# Local run history of the task-runner agent. May contain paths, command
+# output or other sensitive details, so it is not committed. See agent/README.md.
+agent/LOG.md
+
+.DS_Store
+.env
+.env.*
