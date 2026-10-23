@@ -66,9 +66,9 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
 - [x] GATE-P3: Phase 3 report, then stop
 
 ## Phase 4: Code-review verification (no automated tests, per owner)
-- [ ] P4-1: Write `docs/review-checklist.md` listing the security-critical code paths (token validation, nonce/state, acr/auth_time checks, cookie flags, redirect allow-list, client tamper resistance) with file:line pointers and the manual check for each
-- [ ] P4-2: Self-review every item against the code; fix or log gaps. Report which items were only read and which were actually run
-- [ ] GATE-P4: Phase 4 report, then stop
+- [x] P4-1: Write `docs/review-checklist.md` listing the security-critical code paths (token validation, nonce/state, acr/auth_time checks, cookie flags, redirect allow-list, client tamper resistance) with file:line pointers and the manual check for each
+- [x] P4-2: Self-review every item against the code; fix or log gaps. Report which items were only read and which were actually run
+- [x] GATE-P4: Phase 4 report, then stop
 
 ## Phase 5: More IdP profiles and tooling (adapter foundation was built in P2-0)
 - [ ] P5-1: `tools/idp-check` capability probe (discovery vs profile expectations, flags mismatches)

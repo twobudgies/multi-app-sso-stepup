@@ -48,6 +48,7 @@ export default function App() {
   const [toasts, setToasts] = useState<Toast[]>([])
   const [pending, setPending] = useState<Pending | null>(null)
   const [busy, setBusy] = useState(false)
+  const [errorText, setErrorText] = useState('')
   const [email, setEmail] = useState('')
   const started = useRef(false)
   const tokenRef = useRef('')
@@ -90,7 +91,9 @@ export default function App() {
     ;(async () => {
       const res = await processStart()
       const flash = sessionStorage.getItem(FLASH)
-      if (res.error) sessionStorage.setItem(FLASH, res.error)
+      if (res.error) { // never auto-retry after an IdP error: a persistent error would loop forever
+        setErrorText(res.error); setPhase('signedout'); return
+      }
       if (!res.user) {
         if (sessionStorage.getItem(LOGGED_OUT)) { setPhase('signedout'); return }
         await signIn() // SSO: if the IdP session exists, no password prompt
@@ -131,7 +134,7 @@ export default function App() {
   }
 
   if (phase === 'loading') return (<><Header /><div className="ab-center"><div><span className="ab-spinner" /></div><div>Signing you in through Acme Bank single sign-on...</div></div></>)
-  if (phase === 'signedout') return (<><Header /><div className="ab-center"><h1>You are signed out</h1><p className="lead">Your Acme Bank session has ended.</p><button className="ab-btn primary" onClick={() => { sessionStorage.removeItem(LOGGED_OUT); void signIn() }}>Sign in</button></div></>)
+  if (phase === 'signedout') return (<><Header /><div className="ab-center"><h1>{errorText ? 'Sign-in was not completed' : 'You are signed out'}</h1><p className="lead">{errorText || 'Your Acme Bank session has ended.'}</p><button className="ab-btn primary" onClick={() => { sessionStorage.removeItem(LOGGED_OUT); void signIn() }}>Sign in</button></div></>)
 
   return (
     <>
