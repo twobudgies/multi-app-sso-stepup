@@ -21,3 +21,4 @@
 | [idp-check](../tools/idp-check/README.md) | Capability probe for any IdP |
 | [decisions/](decisions/) | ADR-0005 PKCE, ADR-0006 server-side enforcement, ADR-0007 SPA tokens vs BFF, ADR-0008 shared window |
 | [pre-publish-checklist.md](pre-publish-checklist.md) | What to check before the repo goes public |
+| [presentation/](presentation/outline.md) | Deck (`acme-bank-sso-stepup.pptx`), outline and rehearsal guide; `demo/run-demo.md` is the live demo script |

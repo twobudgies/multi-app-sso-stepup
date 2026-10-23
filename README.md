@@ -17,7 +17,7 @@ Configuration: copy `.env.example` to `.env` (git-ignored) and edit. The example
 | `packages/` | Shared code: `idp-profile` (TS loader), `dotnet/IdpProfile` (C# loader and evaluator), `ui-tokens` (Acme Bank look) | - | built |
 | `idp/` | Keycloak realm and IdP profiles | 8180 | built |
 | `tools/` | `login-probe` (headless login), `e2e` (manual end-to-end run); `idp-check` planned | - | partly built |
-| `demo/` | Live-demo scripts and backups | - | planned |
+| `demo/` | Live-demo script (`run-demo.md`) and 14 backup screenshots | - | built |
 | `docs/` | ALL documentation (index: `docs/README.md`, history: `docs/progress-log.md`) | - | yes |
 | `agent/` | Task-runner agent files | - | yes |
 
