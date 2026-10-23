@@ -1,0 +1,4 @@
+/* App-specific tweaks only. The shared look comes from packages/ui-tokens/acme.css */
+.ab-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+.ab-row > * { flex: 1; min-width: 200px; }
+.ab-tabs { display: flex; gap: .5rem; margin-bottom: 1rem; }
