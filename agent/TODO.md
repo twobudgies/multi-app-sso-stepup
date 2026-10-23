@@ -44,12 +44,12 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
   - simple, big text, readable on a projector; no heavy UI frameworks beyond what each app needs
   - done when: `docs/demo-domain.md` documents the story, nav, panel fields and action mapping
 - [x] P2-1b: Customer Portal UI in `apps/react` per P2-1a (accounts, balances, profile, nav bar, session panel)
-- [ ] P2-1c: Payments and Transfers UI in `apps/angular` per P2-1a (send money, add payee, nav bar, session panel)
+- [x] P2-1c: Payments and Transfers UI in `apps/angular` per P2-1a (send money, add payee, nav bar, session panel)
 - [x] P2-1d: Back Office UI in `apps/mvc` per P2-1a (limits, approvals, user management, nav bar, session panel)
 - [x] P2-2: API: JWT bearer validation (JWKS with caching/rotation, `iss`, `aud`, `exp`); `GET /me`, `POST /sensitive/{app}` (no policy yet)
 - [x] P2-3: MVC: Authorization Code + PKCE, `state` and `nonce` verified, server-side session, cookie flags, dev-mode exception documented
 - [x] P2-4: React: Authorization Code + PKCE (`oidc-client-ts`), in-memory token storage, `state`/`nonce` verified
-- [ ] P2-5: Angular: Authorization Code + PKCE (`angular-oauth2-oidc` or equivalent), in-memory token storage, `state`/`nonce` verified
+- [x] P2-5: Angular: Authorization Code + PKCE (`angular-oauth2-oidc` or equivalent), in-memory token storage, `state`/`nonce` verified
 - [ ] P2-6: Logout: local + RP-initiated at the IdP in all three; document what happens to the other apps' sessions (back/front-channel out of scope)
 - [ ] P2-7: Manual SSO verification steps in `docs/manual-checks.md` (log in to one client, open another, no prompt)
 - [ ] GATE-P2: Phase 2 report, then stop
