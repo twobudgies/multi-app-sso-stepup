@@ -38,6 +38,7 @@ Never commit directly to `main`. For each task that changes files:
 Never force-push and never rewrite `main`.
 
 ## Rules
+- The owner is new to this domain (see `BRIEF.md`). In every GATE report add a plain-language "what this means" section and define new terms; add them to `docs/glossary.md`. If the owner asks a question or seems confused, answer it first, simply, before doing more work.
 - Decisions in `BRIEF.md` are the owner's. If a task depends on an undecided or pending-confirmation item, mark it `[!]` and ask instead of choosing. Challenge flawed choices with reasoning and an alternative.
 - Never commit secrets, real tenant IDs, IdP URLs or tokens; use placeholders in `.env.example`.
 - Only do what the task says. If you find extra work, add it as a new `[ ]` task at the bottom of TODO.md and log a NOTE; don't do it unprompted.

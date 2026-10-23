@@ -59,6 +59,7 @@ SPAs are public clients: anything they check is client-side and bypassable. To k
 - Entra uses Conditional Access authentication context / claims challenges rather than plain `acr_values`; the Phase 5 adapter may need real logic.
 
 ## Working rules
+- **The owner is new to SSO/OIDC/MFA.** Explain in plain language, define each term on first use (what it is, why it exists, a one-line example), and prefer a small diagram or analogy over jargon. When the owner is confused, stop and explain before continuing. Phase reports include a short "what you should now understand" section and a glossary of new terms. Put lasting explanations in `docs/glossary.md`.
 - Work phase by phase. At each `GATE` task, stop the run and report: what was done, how to verify, known weaknesses.
 - Challenge the owner's design choices when you see a flaw, with reasoning and a concrete alternative.
 - Prefer small commits with clear messages. Ship via PR as in `.claude/agents/todo-runner.md`.
