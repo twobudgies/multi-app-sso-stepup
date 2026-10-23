@@ -34,6 +34,15 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
   - done when: swapping `IDP_PROFILE` is the only change needed to select a profile; schema documented
 - [ ] P2-1: Scaffold `apps/react`, `apps/angular`, `apps/mvc`, `api/` (ASP.NET Core); minimal home, profile, one sensitive action each
   - shared-API architecture is confirmed by the owner
+- [ ] P2-1a: Shared demo domain and design: fictional "Acme Bank" (no real brands or logos), fake data only. `apps/react` = Customer Portal (accounts, balances, profile), `apps/angular` = Payments and Transfers (send money, add payee), `apps/mvc` = Back Office / Admin (limits, approvals, user management)
+  - shared look: same palette, header and a nav bar linking across all three apps (visible SSO: click through with no login prompt); shared CSS tokens in one place (e.g. `shared/acme.css`) used by all three
+  - "session panel" on every page: app name, user, `acr` level, `auth_time`, and a countdown for the 1-minute step-up window (values read from validated token data via the adapter, not hard-coded)
+  - sensitive actions map to the table in `docs/step-up-actions.md` (e.g. transfer over a limit, add payee, change limits, approve); update that doc if names differ
+  - simple, big text, readable on a projector; no heavy UI frameworks beyond what each app needs
+  - done when: `docs/demo-domain.md` documents the story, nav, panel fields and action mapping
+- [ ] P2-1b: Customer Portal UI in `apps/react` per P2-1a (accounts, balances, profile, nav bar, session panel)
+- [ ] P2-1c: Payments and Transfers UI in `apps/angular` per P2-1a (send money, add payee, nav bar, session panel)
+- [ ] P2-1d: Back Office UI in `apps/mvc` per P2-1a (limits, approvals, user management, nav bar, session panel)
 - [ ] P2-2: API: JWT bearer validation (JWKS with caching/rotation, `iss`, `aud`, `exp`); `GET /me`, `POST /sensitive/{app}` (no policy yet)
 - [ ] P2-3: MVC: Authorization Code + PKCE, `state` and `nonce` verified, server-side session, cookie flags, dev-mode exception documented
 - [ ] P2-4: React: Authorization Code + PKCE (`oidc-client-ts`), in-memory token storage, `state`/`nonce` verified
@@ -49,6 +58,8 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
 - [ ] P3-4: On return, re-validate the new token and let the API re-check `acr`/`auth_time` before the action resumes (never assume the IdP honored the request)
 - [ ] P3-5: Failure paths: user cancels MFA, IdP ignores `acr_values`, token `acr` lower than requested, clock skew
 - [ ] P3-6: Document shared-freshness behavior explicitly (MFA in one client satisfies the others inside the window)
+- [ ] P3-7: End-to-end run against live Keycloak: full SSO and step-up flow across all three apps and the API (SSO click-through, each sensitive action, shared window, expiry after 1 minute, failure paths from P3-5)
+  - record exactly what was actually run vs only reviewed (with evidence) in `docs/manual-checks.md`; do not claim anything unrun
 - [ ] GATE-P3: Phase 3 report, then stop
 
 ## Phase 4: Code-review verification (no automated tests, per owner)
