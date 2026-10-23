@@ -41,7 +41,7 @@ WWW-Authenticate: Bearer error="insufficient_user_authentication",
   acr_values="2", max_age="60"
 ```
 
-## Step-up flow
+## Step-up flow (as built)
 
 ```mermaid
 sequenceDiagram
@@ -54,7 +54,7 @@ sequenceDiagram
   App->>API: POST /sensitive/approve-transfer (Bearer token, LoA1)
   API->>API: acr=1 < 2 required
   API-->>App: 401 insufficient_user_authentication, acr_values=2, max_age=60
-  Note over App: save the pending action + return URL<br/>(MVC: server session; SPA: memory keyed by state)
+  Note over App: save the pending action + return URL<br/>(MVC: server session; SPA: the OIDC `state` object, see ADR-0003)
   App->>KC: redirect /authorize (acr_values=2, max_age=60, PKCE, new state+nonce)
   KC->>U: ask for TOTP (password skipped if still fresh)
   U->>KC: enter TOTP
@@ -92,5 +92,5 @@ Example timeline (window 1 minute for every action):
 | User cancels MFA | IdP returns `error=access_denied` (or user closes the page). App returns to the pending page with "Step-up cancelled", action NOT performed |
 | IdP ignores `acr_values` | New token still LoA1. API challenges again, app stops after one retry with an error |
 | Token `acr` lower than requested | Same as above: API is the judge |
-| Clock skew between API and IdP | API allows a small leeway (proposed 5 s, kept small because the window is only 60 s) on `exp` and on the `auth_time` check |
+| Clock skew between API and IdP | API allows a 5 s leeway (`STEPUP_CLOCK_SKEW_SECONDS`) on `exp` and on the `auth_time` check. **The effective window is therefore up to 65 s.** An IdP clock more than 5 s ahead is denied (`auth_time_in_future`) |
 | Refresh instead of step-up | Refresh keeps the old `auth_time`, so it can never satisfy a stale policy (see [token-lifecycle.md](token-lifecycle.md)) |

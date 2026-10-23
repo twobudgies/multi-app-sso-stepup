@@ -36,6 +36,27 @@ npm run dev:mvc         # terminal 5, port 5200
 
 Open http://localhost:5300 and sign in as `alice` / `alice-dev-only`. Authenticator code: add the Base32 secret from `docs/idp-keycloak.md` to a phone app. Reset the IdP with `npm run reset`. Full checklist: `docs/manual-checks.md`.
 
+## Architecture in one picture
+
+```mermaid
+flowchart LR
+  U[User] --- R[Customer Portal React 5300]
+  U --- A[Payments Angular 5400]
+  U --- M[Back Office MVC 5200]
+  R -- Bearer token --> API[Shared API 5100: enforces step-up]
+  A -- Bearer token --> API
+  M -- Bearer token --> API
+  R & A & M -- "login + TOTP (code + PKCE)" --> KC[Keycloak 8180]
+  API -- "JWKS (public keys)" --> KC
+```
+
+SSO: one Keycloak session cookie links the apps, so the second app signs in without a prompt. Step-up: the API checks `acr` (level) and `auth_time` (age) in the signed access token. If too weak or too old (over 60 s, effectively up to 65 s with the clock-skew leeway) it answers `401` + `WWW-Authenticate: Bearer error="insufficient_user_authentication", acr_values="2", max_age="60"`; the app sends the user back to Keycloak for the authenticator code and retries. Full sequence diagrams: [docs/architecture.md](docs/architecture.md) and [docs/step-up-actions.md](docs/step-up-actions.md).
+
+**Claims relied on:** `acr` (LoA1 = `1`, LoA2 = `2`), `auth_time`, `aud`, `iss`, `exp`. Not `amr` (Keycloak does not emit it).
+
+## Known limitations
+PoC, not production-hardened: plain HTTP on localhost, Keycloak dev mode, tokens in SPA memory (a BFF is the production pattern), no back/front-channel logout, in-memory API data and MVC sessions, a public fake TOTP seed, a window that is really up to 65 s, no cumulative transfer limits. Only Keycloak was tested; other IdP profiles are templates. Windows was not run. See [docs/review-checklist.md](docs/review-checklist.md).
+
 ## Tested IdPs
 
 | IdP | Status |

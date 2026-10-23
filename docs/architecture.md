@@ -1,6 +1,6 @@
 # Architecture: how the apps talk to the IdP
 
-> Status: implemented for Keycloak (see [demo-domain.md](demo-domain.md), [api.md](api.md), [idp-keycloak.md](idp-keycloak.md)); remaining differences are reconciled in P6-1. Local IdP is Keycloak; see [BRIEF](../agent/BRIEF.md) for decisions.
+> Status: reconciled with the code on 2026-10-23 (Keycloak tested). See also [demo-domain.md](demo-domain.md), [api.md](api.md), [idp-keycloak.md](idp-keycloak.md). Local IdP is Keycloak; see [BRIEF](../agent/BRIEF.md) for decisions.
 
 ## Demo domain: Acme Bank
 
@@ -98,17 +98,21 @@ Signature, `iss`, `aud` (must name the API), `exp`, then the *policy* for that a
 
 ## Logout
 
-- Each app clears its own session/tokens, then redirects to `end_session_endpoint`, which ends the Keycloak session.
-- Other apps are **not** told (back/front-channel logout is out of scope). Their local sessions and tokens keep working until the access token expires and refresh fails (see [token-lifecycle.md](token-lifecycle.md)), which is at most the IdP's refresh/session lifetime.
+Each app has local sign-out plus RP-initiated logout at the IdP (`end_session_endpoint` with `id_token_hint`), which ends the Keycloak session. Other apps are **not** told (back/front-channel logout is out of scope by owner decision): an open tab keeps its in-memory token until the 5-minute access token expires or the page reloads; the next load or API call then goes through the IdP and asks for a login. Verified by running: sign-out in React, then Angular shows the IdP login page.
 
 ## Swapping the IdP
 
 Keycloak is only the local default. IdP-specific behavior sits behind profiles and an adapter, so Entra ID, Okta, Cognito or another OIDC provider can be connected without changing app logic. See [idp-adapter.md](idp-adapter.md).
 
+## Ports and repo layout
+Keycloak 8180, API 5100, MVC 5200, React 5300, Angular 5400 ([ADR-0002](decisions/0002-port-choices.md)). Monorepo layout: [ADR-0001](decisions/0001-monorepo-layout.md). Repo map in the root README.
+
+## Cookie and storage reality (as built)
+- React and Angular: tokens in JS memory; only PKCE verifier, nonce and our non-sensitive step-up state live in sessionStorage during the redirect ([ADR-0003](decisions/0003-spa-state-in-session-storage.md)).
+- MVC: tokens in a server-side ticket store (in-memory, lost on restart); browser has `bo.auth` (HttpOnly, SameSite=Lax, Secure outside Development) and `bo.session`. Authorize requests are plain URLs (pushed authorization requests disabled so it works with any IdP).
+- No refresh tokens are used: when the 5-minute access token ends, the SPAs reload through SSO and MVC signs the user in again.
+
 ## Where config comes from
 
 Everything IdP-specific (issuer, client ids, scopes, `acr` names) comes from environment variables (see `.env.example`). No real URLs, tenants or secrets in the repo.
 
-
-## Logout (implemented)
-Each app has local sign-out plus RP-initiated logout at the IdP (`end_session_endpoint` with `id_token_hint`). Ending the IdP session means the other apps ask for a login the next time they load or call the API. Back-channel and front-channel logout are out of scope by owner decision; an open tab in another app keeps its in-memory token until it expires (5 min) or reloads. Verified by running: sign-out in React, then Angular shows the IdP login page.

@@ -1,6 +1,6 @@
 # Documentation index
 
-> Status: **design documents** (being reconciled with code). The code does not exist yet. Each doc says what the apps *will* do. They are reconciled with the real code in task P6-1 and anything that turns out different is corrected then.
+> Status: reconciled with the code on 2026-10-23. Each doc says at the top what is built, what is only reviewed and what is not implemented.
 
 | Doc | Read it to understand |
 |-----|-----------------------|
@@ -19,3 +19,5 @@
 | [manual-checks.md](manual-checks.md) | Step-by-step demo checklist and the evidence of what was run vs only reviewed |
 | [review-checklist.md](review-checklist.md) | Security-critical code paths, how each was checked (run vs read), known weaknesses |
 | [idp-check](../tools/idp-check/README.md) | Capability probe for any IdP |
+| [decisions/](decisions/) | ADR-0005 PKCE, ADR-0006 server-side enforcement, ADR-0007 SPA tokens vs BFF, ADR-0008 shared window |
+| [pre-publish-checklist.md](pre-publish-checklist.md) | What to check before the repo goes public |
