@@ -79,10 +79,10 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
 - [x] GATE-P5: Phase 5 report, then stop
 
 ## Phase 6: Docs and pre-publish
-- [ ] P6-1: Reconcile `docs/architecture.md`, `docs/token-lifecycle.md`, `docs/step-up-actions.md` (written as design before the code existed) with the real code and lifetimes; fix anything that differs and remove their "design" status banner. README: architecture diagram, SSO flow, step-up sequence diagram, claims relied on, known limitations, how to run
-- [ ] P6-2: ADRs in `docs/decisions/`: PKCE code flow, server-side enforcement (API), freshness policy (shared), SPA tokens in memory vs BFF
-- [ ] P6-3: Pre-publish checklist doc: full-history `gitleaks` + `trufflehog`, then flip visibility OR publish a fresh squashed repo (owner prefers a fresh repo)
-- [ ] GATE-P6: Phase 6 report, then stop
+- [x] P6-1: Reconcile `docs/architecture.md`, `docs/token-lifecycle.md`, `docs/step-up-actions.md` (written as design before the code existed) with the real code and lifetimes; fix anything that differs and remove their "design" status banner. README: architecture diagram, SSO flow, step-up sequence diagram, claims relied on, known limitations, how to run
+- [x] P6-2: ADRs in `docs/decisions/`: PKCE code flow, server-side enforcement (API), freshness policy (shared), SPA tokens in memory vs BFF
+- [x] P6-3: Pre-publish checklist doc: full-history `gitleaks` + `trufflehog`, then flip visibility OR publish a fresh squashed repo (owner prefers a fresh repo)
+- [x] GATE-P6: Phase 6 report, then stop
 
 ## Phase 7: Presentation for the office team (after everything else is done)
 - [ ] P7-0: Presentation requirements (owner answered 2026-10-23): audience **mixed** (developers + managers), **45 min** total, **live demo** included. Owner has a company PPT template: ask them to place it in the git-ignored `docs/presentation/private/` folder (never commit it)

@@ -39,5 +39,6 @@ const code = new URL(loc).searchParams.get('code');
 const t = await (await fetch(`${ISS}/protocol/openid-connect/token`, { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ grant_type: 'authorization_code', client_id: CLIENT, redirect_uri: REDIRECT, code, code_verifier: verifier }) })).json();
 const dec = (j) => JSON.parse(Buffer.from(j.split('.')[1], 'base64url'));
 const a = dec(t.access_token), id = dec(t.id_token);
+if (process.argv.includes('--refresh')) { await new Promise(r => setTimeout(r, 3000)); const r2 = await (await fetch(`${ISS}/protocol/openid-connect/token`, { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ grant_type: 'refresh_token', client_id: CLIENT, refresh_token: t.refresh_token }) })).json(); const b = dec(r2.access_token), a0 = dec(t.access_token); console.log(JSON.stringify({ before: { acr: a0.acr, auth_time: a0.auth_time, iat: a0.iat }, afterRefresh: { acr: b.acr, auth_time: b.auth_time, iat: b.iat } })); process.exit(0); }
 if (process.argv.includes('--token')) { console.log(t.access_token); process.exit(0); }
 console.log(JSON.stringify({ access: { acr: a.acr, auth_time: a.auth_time, aud: a.aud, iss: a.iss, exp: a.exp, iat: a.iat }, id: { acr: id.acr, auth_time: id.auth_time, nonce: id.nonce } }, null, 1));

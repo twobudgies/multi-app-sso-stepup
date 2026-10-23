@@ -1,13 +1,13 @@
 # Token lifecycle and refresh
 
-> Status: design (not yet implemented). Lifetimes below are Keycloak-style defaults and **will be set explicitly in the realm JSON** in Phase 1.
+> Status: reconciled with the code on 2026-10-23. **What is built:** access token 300 s set in the realm; tokens in memory (SPAs) or server-side (MVC); **refresh tokens are NOT used by the apps** (the sections below describe the production approach and are marked as not implemented). Verified by running: a refresh keeps the original `auth_time` and `acr` and only changes `iat` (`node tools/login-probe.mjs --acr 2 --max-age 60 --refresh`).
 
 ## The three tokens
 
-| Token | Who reads it | Lifetime (proposed) | Purpose |
+| Token | Who reads it | Lifetime | Purpose |
 |-------|--------------|---------------------|---------|
 | **ID token** | the client app | short, used once at login | Proves who logged in and *how* (`acr`, `auth_time`, `nonce`). Never sent to the API |
-| **Access token** | the API | **5 min** | Sent as `Authorization: Bearer ...`. Carries `acr`, `auth_time`, `aud=api` |
+| **Access token** | the API | **5 min** (realm setting, 300 s) | Sent as `Authorization: Bearer ...`. Carries `acr`, `auth_time`, `aud=api` |
 | **Refresh token** | the IdP token endpoint only | up to the IdP session limits (idle 30 min, max 10 h) | Gets a new access token without asking the user to log in again |
 
 Access tokens are short on purpose: if one leaks, it dies in minutes.
@@ -18,11 +18,11 @@ Access tokens are short on purpose: if one leaks, it dies in minutes.
 |-----|------------------|-----|
 | React | JavaScript **memory** only (not localStorage/sessionStorage) | An XSS bug can still use them while the page is open, but nothing is left on disk |
 | Angular | JavaScript **memory** only | same |
-| MVC | **server-side session**; the browser only holds an `HttpOnly`, `Secure`, `SameSite=Lax` session cookie | Tokens never reach the browser |
+| MVC | **server-side ticket store** (in memory); the browser only holds an `HttpOnly`, `SameSite=Lax` cookie (`Secure` outside Development) | Tokens never reach the browser |
 
-Trade-off: SPAs holding tokens is weaker than a backend-for-frontend (server keeps tokens). Chosen for PoC simplicity; recorded as an ADR in Phase 6.
+Trade-off: SPAs holding tokens is weaker than a backend-for-frontend (server keeps tokens). Chosen for PoC simplicity; see [ADR-0007](decisions/0007-spa-tokens-in-memory-vs-bff.md).
 
-## How refresh works
+## How refresh works (NOT implemented in this PoC; production approach)
 
 ### React and Angular (public clients)
 
@@ -33,7 +33,7 @@ Trade-off: SPAs holding tokens is weaker than a backend-for-frontend (server kee
 
 Libraries (proposed): React `oidc-client-ts` (`automaticSilentRenew` with refresh tokens), Angular `angular-oauth2-oidc` (`setupAutomaticSilentRefresh`, code flow with refresh token). Both must be configured to use the refresh token, **not** a hidden-iframe `prompt=none` renew, which breaks under modern browser third-party-cookie rules.
 
-**Page reload:** memory is wiped, so the tokens are gone. The app starts a fresh authorization request with `prompt=none`; if the Keycloak session cookie is still valid, it returns a code immediately and the user sees nothing. This is the same mechanism that gives SSO.
+**Page reload (as built):** memory is wiped, so the tokens are gone. The app starts a fresh authorization request (no `prompt=none`); if the Keycloak session cookie is still valid, it returns a code immediately and the user sees nothing. This is the same mechanism that gives SSO. If the IdP answers with an error, the app shows a message instead of retrying (no loop).
 
 ### MVC (confidential client)
 
@@ -54,7 +54,7 @@ Each tab has its own memory and so its own refresh token. With rotation, the tab
 
 Important and easy to get wrong:
 
-- A refreshed access token keeps the **original** `auth_time` and `acr` of the login that created the session (to be confirmed in Keycloak during Phase 1/3; the API relies on claims, not on this assumption being true, so it stays safe either way).
+- A refreshed access token keeps the **original** `auth_time` and `acr` of the login that created the session (**confirmed in Keycloak 26.0**, 2026-10-23; the API relies on claims anyway, so it would stay safe either way).
 - So after 1 minute, refreshing gives a *fresh token* but the *same old MFA time*. The API reads `auth_time`, sees it is stale, and demands step-up.
 - The only way to get a new `auth_time` or a higher `acr` is a **new authorization request** that goes through Keycloak's login/MFA screens. See [step-up-actions.md](step-up-actions.md).
 
