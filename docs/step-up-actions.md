@@ -61,7 +61,7 @@ sequenceDiagram
   KC-->>App: new tokens (acr=2, auth_time=now)
   App->>App: validate ID token (sig, iss, aud, nonce, acr, auth_time)
   App->>API: retry original request with new access token
-  API->>API: acr=2 OK, auth_time within 120 s OK
+  API->>API: acr=2 OK, auth_time within 60 s OK
   API-->>App: 200 action performed
 ```
 
