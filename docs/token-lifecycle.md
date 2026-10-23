@@ -55,17 +55,17 @@ Each tab has its own memory and so its own refresh token. With rotation, the tab
 Important and easy to get wrong:
 
 - A refreshed access token keeps the **original** `auth_time` and `acr` of the login that created the session (to be confirmed in Keycloak during Phase 1/3; the API relies on claims, not on this assumption being true, so it stays safe either way).
-- So after 5 minutes, refreshing gives a *fresh token* but the *same old MFA time*. The API reads `auth_time`, sees it is stale, and demands step-up.
+- So after 1 minute, refreshing gives a *fresh token* but the *same old MFA time*. The API reads `auth_time`, sees it is stale, and demands step-up.
 - The only way to get a new `auth_time` or a higher `acr` is a **new authorization request** that goes through Keycloak's login/MFA screens. See [step-up-actions.md](step-up-actions.md).
 
 ```mermaid
 timeline
-  title Example: access token 5 min, step-up window 5 min
+  title Example: access token 5 min, step-up window 1 min
   00:00 : Login with password (LoA1) : auth_time = 00:00
   00:04 : Silent refresh : new access token, auth_time still 00:00
   00:06 : User clicks sensitive action : API sees LoA1, challenges
   00:06 : MFA done at IdP : new tokens, auth_time = 00:06, LoA2
+  00:06 + 30 s : Another sensitive action : 30 s old, inside window, allowed
   00:09 : Silent refresh : auth_time still 00:06, LoA2 kept
-  00:10 : Another sensitive action : 4 min old, inside window, allowed
-  00:12 : Another sensitive action : 6 min old, stale, step-up again
+  00:10 : Another sensitive action : 4 min old, over 1 min, step-up again
 ```

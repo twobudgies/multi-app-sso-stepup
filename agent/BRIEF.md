@@ -31,13 +31,17 @@ State any assumption before relying on it and flag anything that needs the owner
 ## Decisions (recorded 2026-10-23)
 | # | Decision | Value | Source |
 |---|----------|-------|--------|
-| 1 | Stack | React SPA + Angular SPA + C# ASP.NET Core MVC, plus one shared ASP.NET Core API (see Architecture) | Owner chose three clients; shared API is the agent's recommendation, **pending owner confirmation** |
-| 2 | Second factor | TOTP | Default assumed (owner did not choose). Easy to change to WebAuthn later |
+| 1 | Stack | React SPA + Angular SPA + C# ASP.NET Core MVC, plus one shared ASP.NET Core API (see Architecture) | Owner chose three clients; **shared API confirmed by owner** |
+| 2 | Second factor | TOTP | **Confirmed by owner** (authenticator app on phone). WebAuthn possible later |
 | 3 | Step-up freshness | **Shared window** across all apps | Owner |
 | 4 | Front/back-channel logout | Out of scope; local + RP-initiated logout only, document the rest | Owner |
-| 5 | Entra/Okta tenant | None available. Config template and docs only, untested | Default assumed |
+| 5 | Entra/Okta tenant | None available. Config template and docs only, untested | Owner (no tenant mentioned) |
 | 7 | IdP flexibility | Profile-driven adapter from the start (Phase 2), not bolted on in Phase 5. Only Keycloak is tested; other profiles are templates | Owner (requirement); phase order changed by agent |
-| 8 | "AWS IdP" | Assumed Amazon Cognito; IAM Identity Center is not a general sign-in IdP for custom apps | **Pending owner confirmation** |
+| 8 | "AWS IdP" | Amazon Cognito, as an untested profile template. **Keycloak is the primary IdP** because the demo runs locally | Owner |
+| 9 | Step-up max age | **1 minute for all sensitive actions** (so it can be shown in the live demo); must be configurable, not hard-coded | Owner |
+| 10 | Platforms | Built on macOS; the demo runs on a **Windows** office laptop. Everything needed to run the demo must work on both | Owner |
+| 11 | Presentation | Mixed audience, 45 min, live demo, owner has a company PPT template (kept out of git) | Owner |
+| 12 | Publishing | Fresh squashed repo, not flipping this one | Owner |
 | 6 | Tests | No E2E or automated test suites. Verify by code review and a manual checklist | Owner |
 
 ## Architecture (recommended, needs owner confirmation)
@@ -64,3 +68,10 @@ SPAs are public clients: anything they check is client-side and bypassable. To k
 - Challenge the owner's design choices when you see a flaw, with reasoning and a concrete alternative.
 - Prefer small commits with clear messages. Ship via PR as in `.claude/agents/todo-runner.md`.
 - Because there are no automated tests, state plainly in each report what was only reviewed and what was actually run. Never claim something works unless you ran it.
+
+## Cross-platform rules (macOS dev, Windows demo)
+- Run everything through `docker compose`, `dotnet` and `npm` commands, which behave the same on both. Do not make the demo depend on bash scripts; if a helper script is needed, provide a PowerShell version too, or write it as an npm script.
+- Add `.gitattributes` forcing LF for scripts, JSON and config, so Windows checkout does not break them.
+- Use forward-slash paths in config, avoid case-only file name differences, and document Docker Desktop (WSL2) setup, free ports and the clock-sync requirement for TOTP in `docs/windows-setup.md`.
+- `agent/log.sh` is bash and only used by the agent on macOS (on Windows use Git Bash or WSL).
+- The company PPT template must NOT be committed (it may be confidential); keep it in a git-ignored folder.

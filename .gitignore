@@ -5,3 +5,6 @@ agent/LOG.md
 .DS_Store
 .env
 .env.*
+
+# Company PPT template and other private presentation assets (never commit)
+docs/presentation/private/
