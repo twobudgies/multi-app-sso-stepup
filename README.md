@@ -2,7 +2,9 @@
 
 Proof of concept: SSO across two apps with an external IdP, plus step-up MFA re-authentication for sensitive actions.
 
-> Status: early work in progress.
+> Status: early work in progress. PoC, not production-hardened.
+
+Configuration: copy `.env.example` to `.env` (git-ignored) and edit. The example holds placeholders only.
 
 ## Documentation
 
