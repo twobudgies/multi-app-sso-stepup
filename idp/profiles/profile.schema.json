@@ -2,25 +2,141 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "IdP profile",
   "type": "object",
-  "required": ["name", "capabilities", "level", "authTime", "stepUpRequest"],
+  "required": [
+    "name",
+    "capabilities",
+    "level",
+    "authTime",
+    "stepUpRequest"
+  ],
   "properties": {
-    "name": { "type": "string" },
-    "tested": { "type": "boolean" },
+    "name": {
+      "type": "string"
+    },
+    "tested": {
+      "type": "boolean"
+    },
     "capabilities": {
       "type": "object",
-      "required": ["acrValues", "maxAge", "promptLogin", "claimsParam", "emitsAuthTime", "emitsAmr"],
-      "additionalProperties": { "type": "boolean" }
+      "required": [
+        "acrValues",
+        "maxAge",
+        "promptLogin",
+        "claimsParam",
+        "emitsAuthTime",
+        "emitsAmr"
+      ],
+      "additionalProperties": {
+        "type": "boolean"
+      }
     },
     "level": {
-      "type": "object", "required": ["claim", "type", "map"],
-      "properties": { "claim": { "type": "string" }, "type": { "enum": ["string", "array"] },
-        "map": { "type": "object", "required": ["LoA1", "LoA2"], "additionalProperties": { "type": "array", "items": { "type": "string" } } } }
+      "type": "object",
+      "required": [
+        "claim",
+        "type",
+        "map"
+      ],
+      "properties": {
+        "claim": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "string",
+            "array"
+          ]
+        },
+        "map": {
+          "type": "object",
+          "required": [
+            "LoA1",
+            "LoA2"
+          ],
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
     },
-    "authTime": { "type": "object", "required": ["claim"], "properties": { "claim": { "type": ["string", "null"] } } },
+    "authTime": {
+      "type": "object",
+      "required": [
+        "claim"
+      ],
+      "properties": {
+        "claim": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
     "stepUpRequest": {
-      "type": "object", "required": ["acrValues", "maxAge", "promptLogin"],
-      "properties": { "acrValues": { "type": "object", "required": ["LoA2"], "additionalProperties": { "type": "string" } },
-        "maxAge": { "type": "boolean" }, "promptLogin": { "enum": ["never", "when-stale", "always"] } }
+      "type": "object",
+      "required": [
+        "acrValues",
+        "maxAge",
+        "promptLogin"
+      ],
+      "properties": {
+        "acrValues": {
+          "type": "object",
+          "required": [
+            "LoA2"
+          ],
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "maxAge": {
+          "type": "boolean"
+        },
+        "promptLogin": {
+          "enum": [
+            "never",
+            "when-stale",
+            "always"
+          ]
+        },
+        "claimsParam": {
+          "type": "string",
+          "description": "claims parameter template; {level} is replaced by the IdP's value for LoA2 (Entra authentication context)"
+        }
+      }
+    },
+    "challenge": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "rfc9470",
+            "entra-claims"
+          ]
+        },
+        "acrsValue": {
+          "type": "string"
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "_status": {
+      "type": "string"
     }
   }
 }

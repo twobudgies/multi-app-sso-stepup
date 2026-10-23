@@ -71,12 +71,12 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
 - [x] GATE-P4: Phase 4 report, then stop
 
 ## Phase 5: More IdP profiles and tooling (adapter foundation was built in P2-0)
-- [ ] P5-1: `tools/idp-check` capability probe (discovery vs profile expectations, flags mismatches)
-- [ ] P5-2: Profile templates for Entra ID (authentication context + claims challenge), Okta, Amazon Cognito (owner confirmed Cognito); verify every claim and parameter name against the provider's current documentation and cite the doc URL in the profile comments
-- [ ] P5-3: Handle IdPs without `auth_time` or without `acr_values` support per the "freshness problem" section; reject unsafe profiles at startup
-- [ ] P5-4: Extend `docs/idp-adapter.md` with a "how to add an IdP" walkthrough validated against the generic profile
-- [ ] P5-5: README states exactly which IdPs were tested (Keycloak only unless the owner provides a tenant); templates are labelled untested
-- [ ] GATE-P5: Phase 5 report, then stop
+- [x] P5-1: `tools/idp-check` capability probe (discovery vs profile expectations, flags mismatches)
+- [x] P5-2: Profile templates for Entra ID (authentication context + claims challenge), Okta, Amazon Cognito (owner confirmed Cognito); verify every claim and parameter name against the provider's current documentation and cite the doc URL in the profile comments
+- [x] P5-3: Handle IdPs without `auth_time` or without `acr_values` support per the "freshness problem" section; reject unsafe profiles at startup
+- [x] P5-4: Extend `docs/idp-adapter.md` with a "how to add an IdP" walkthrough validated against the generic profile
+- [x] P5-5: README states exactly which IdPs were tested (Keycloak only unless the owner provides a tenant); templates are labelled untested
+- [x] GATE-P5: Phase 5 report, then stop
 
 ## Phase 6: Docs and pre-publish
 - [ ] P6-1: Reconcile `docs/architecture.md`, `docs/token-lifecycle.md`, `docs/step-up-actions.md` (written as design before the code existed) with the real code and lifetimes; fix anything that differs and remove their "design" status banner. README: architecture diagram, SSO flow, step-up sequence diagram, claims relied on, known limitations, how to run

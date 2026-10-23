@@ -11,6 +11,7 @@
     "install:all": "npm --prefix apps/react install && npm --prefix apps/angular install",
     "dev:mvc": "dotnet run --project apps/mvc",
     "dev:angular": "npm --prefix apps/angular start",
-    "check:evaluator": "dotnet run --project tools/evaluator-check"
+    "check:evaluator": "dotnet run --project tools/evaluator-check",
+    "idp-check": "node tools/idp-check/index.mjs"
   }
 }

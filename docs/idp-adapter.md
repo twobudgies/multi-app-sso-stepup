@@ -1,6 +1,6 @@
 # IdP adapter: connecting any identity provider
 
-> Status: C# side implemented in `packages/dotnet/IdpProfile` (loader, evaluator, request builder, challenge writer), used by the API; TypeScript side comes with the SPAs. Profile files: `idp/profiles/`, schema `profile.schema.json`. Only **Keycloak** will be tested. The Cognito, Entra ID and Okta profiles are templates built from provider documentation and must be verified against a real tenant before anyone relies on them.
+> Status: implemented for Keycloak (tested). Profiles for Entra ID, Okta and Cognito are **templates from provider documentation, never run against a real tenant**. C# side: `packages/dotnet/IdpProfile`; TypeScript side: `packages/idp-profile` (builds requests only; enforcement is server-side, see [ADR-0004](decisions/0004-minimal-ts-profile-loader.md)). Profile files: `idp/profiles/`, schema `profile.schema.json`.
 
 > Implementation note: the TypeScript side (`packages/idp-profile`) only **builds requests** and parses challenges; **enforcement is server-side** in the API (see [ADR-0004](decisions/0004-minimal-ts-profile-loader.md)).
 
@@ -100,17 +100,22 @@ The evaluator in the **API** is the only one that decides. Client copies are for
 
 Implementation note: one profile format, thin code in two languages (TypeScript for the SPAs, C# for the API and MVC). Keep both implementations small and driven by the same profile file so they cannot drift.
 
-## Provider notes (to verify, not assumed)
+## Provider notes (from provider documentation, 2026-10-23; only Keycloak was ever run)
 
-| Provider | What "AWS IdP" etc. likely means | Expected differences |
-|----------|-----------------------------------|----------------------|
-| **Keycloak** | tested reference | `acr`, `auth_time`; no native `amr` |
-| **Entra ID** | Microsoft identity platform v2 | Step-up through Conditional Access *authentication context* and `claims` challenges, `acrs` claim, `amr` contains `mfa`. `auth_time` may be absent from tokens; may need an optional claim or a different freshness strategy |
-| **Okta** | Okta Workforce/Customer Identity | `acr_values` such as `urn:okta:loa:2fa:any`, `max_age` and `prompt=login` supported; `auth_time` in ID token |
-| **Amazon Cognito** | "AWS IdP" most likely means a Cognito user pool. IAM Identity Center is mainly for AWS access, not for signing users in to custom apps | MFA is configured per user pool, not requested per request. `acr_values` is likely not honored, so per-action step-up may need a different approach (for example a separate app client or user pool that always requires MFA) |
-| **Generic OIDC** | any other compliant IdP | Works for login. Step-up works only if the profile can express its behavior |
+| Provider | How step-up is requested | Token claims | API challenge | Profile | Source |
+|----------|--------------------------|--------------|---------------|---------|--------|
+| **Keycloak** | `acr_values=2`, `max_age` | `acr`, `auth_time` (in ID and access token via mappers) | RFC 9470 | `keycloak.json`, **tested** | [idp-keycloak.md](idp-keycloak.md) |
+| **Entra ID** | Conditional Access **authentication context** (C1..C99) sent in the `claims` parameter; no `acr_values` | `acrs` (array, optional claim the resource must opt in to) | Entra claims challenge: `error="insufficient_claims"`, base64 `claims`, `cc_type="authcontext"` | `entra.json`, template, **untested** | [auth context guide](https://learn.microsoft.com/en-us/entra/identity-platform/developer-guide-conditional-access-authentication-context) |
+| **Okta** | `acr_values=urn:okta:loa:2fa:any`, `max_age` (0 forces re-auth); unsupported values are ignored | `acr`, `auth_time` | callback error `unmet_authentication_requirements` when the level cannot be met | `okta.json`, template, **untested** | [step-up guide](https://developer.okta.com/docs/guides/step-up-authentication/main/) |
+| **Amazon Cognito** ("AWS IdP" assumed to mean a Cognito user pool) | `acr_values=urn:cognito:loa:4` (password + TOTP) and `max_age`, **managed login only**, Essentials/Plus plan; a lower plan silently ignores `acr_values`; documented as rolling out gradually | `acr`, `amr`, `auth_time` in ID and access tokens; refresh keeps them | RFC 9470 (our API) | `cognito.json`, template, **untested** | [step-up](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-step-up-authentication.html), [authorize endpoint](https://docs.aws.amazon.com/cognito/latest/developerguide/authorization-endpoint.html) |
+| **Generic OIDC** | `acr_values` + `max_age` (assumed) | `acr`, `auth_time` | RFC 9470 | `generic.json`, same values as Keycloak, **untested elsewhere** | RFC 9470 |
 
-**Please confirm which AWS service you mean** (Cognito vs IAM Identity Center). I assume Cognito.
+Correction to an earlier assumption: this document first guessed Cognito would not honor `acr_values`. The current AWS documentation says it does (managed login, Essentials/Plus). It is still untested here.
+
+Honest limits of the templates:
+- **Entra** does not document `max_age` or a guaranteed `auth_time` for this flow, so its profile has `emitsAuthTime: false`. The API **refuses to start** with a max-age policy under that profile (run and verified). To use Entra you would either configure sign-in frequency in the Conditional Access policy and drop the API-side age check (a weaker, documented trade-off), or add an `auth_time` optional claim after verifying it in a real tenant.
+- **Okta** ignores unsupported `acr_values`, and **Cognito** ignores them on a lower plan, so the client and the API both re-check the returned level (already implemented).
+- The exact `acr` strings in real tokens must be confirmed against a real tenant.
 
 ## The freshness problem (honest limitation)
 
@@ -125,11 +130,15 @@ A profile with `emitsAuthTime: false` and no workaround is rejected at startup f
 
 A small script, `tools/idp-check`, reads `<issuer>/.well-known/openid-configuration` and prints what the IdP advertises (`acr_values_supported`, `claims_supported`, `code_challenge_methods_supported`, `end_session_endpoint`, grant types) next to what the chosen profile expects, and flags mismatches. Discovery metadata is not proof (some IdPs under-report), so the final check is the manual one in `docs/manual-checks.md` against a real tenant.
 
-## Adding a new IdP
+## Adding a new IdP (walkthrough)
 
-1. Run `tools/idp-check` against its issuer URL.
-2. Copy `idp/profiles/generic.json` to `idp/profiles/<name>.json`; fill in the five answers from the table above.
-3. In the IdP, register the clients (redirect URIs, PKCE, the API audience) and make sure the MFA level and auth time are present in the **access token**.
-4. Set `IDP_PROFILE`, `IDP_ISSUER` and client ids in `.env`.
-5. Walk through `docs/manual-checks.md` (login, SSO, step-up, stale window, cancel MFA).
-6. Add the provider to the "tested IdPs" table in the README only if step 5 passed.
+Validated on 2026-10-23 by running the `generic` profile against the Keycloak realm: `idp-check` printed no mismatch, the API started with `IDP_PROFILE=generic`, `/me` returned the right level and a LoA1 token was challenged on `change-email`.
+
+1. **Probe it.** `node tools/idp-check/index.mjs --issuer <issuer-url> --profile generic`. Read the warnings: discovery is not proof.
+2. **Copy the template.** `copy idp/profiles/generic.json idp/profiles/<name>.json` and fill in the five answers (how to ask for a stronger login, how to ask for a fresh one, which claim carries the level, which carries the auth time, which challenge format). Set `"tested": false` and add `sources` URLs.
+3. **Register the clients in the IdP**: redirect URIs from `.env.example`, PKCE S256, an audience for the API, and make sure the level and auth time are in the **access token**.
+4. **Configure.** Set `IDP_PROFILE=<name>` and `IDP_ISSUER=<url>` (and client secrets) in `.env`. No app code changes. For Angular the value is read by `npm run dev:angular`.
+5. **Start the API.** If the profile cannot provide an auth time and a policy has a max age, it refuses to start with a clear message (this is deliberate).
+6. **Walk through** [manual-checks.md](manual-checks.md): login, SSO, step-up, expiry, cancel.
+7. **Only then** add the IdP to the "tested IdPs" list in the README, with the date and what was run.
+

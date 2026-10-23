@@ -1,0 +1,49 @@
+{
+  "name": "cognito",
+  "tested": false,
+  "_status": "TEMPLATE, UNTESTED: built from AWS documentation, never run against a user pool.",
+  "sources": [
+    "https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-step-up-authentication.html",
+    "https://docs.aws.amazon.com/cognito/latest/developerguide/authorization-endpoint.html",
+    "https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-the-id-token.html"
+  ],
+  "notes": [
+    "Step-up needs managed login (not the classic hosted UI) and the Essentials or Plus feature plan. On a lower plan the authorize endpoint SILENTLY IGNORES acr_values, so the API check is essential.",
+    "The ACR levels are fixed: loa:1 password only, loa:4 password + TOTP. LoA2 maps to loa:4 only (loa:3 would accept password + SMS/email OTP, a weaker policy, so it is NOT accepted here).",
+    "The docs say the ACR/AMR feature is rolling out gradually and may not yet be available to a user pool. max_age is supported and compared with auth_time. Refresh preserves acr and auth_time.",
+    "acr and amr are in both ID and access tokens per the cited step-up page. Level names can be customised (AcrConfiguration): keep the map in sync."
+  ],
+  "capabilities": {
+    "acrValues": true,
+    "maxAge": true,
+    "promptLogin": true,
+    "claimsParam": false,
+    "emitsAuthTime": true,
+    "emitsAmr": true
+  },
+  "level": {
+    "claim": "acr",
+    "type": "string",
+    "map": {
+      "LoA1": [
+        "urn:cognito:loa:1"
+      ],
+      "LoA2": [
+        "urn:cognito:loa:4"
+      ]
+    }
+  },
+  "authTime": {
+    "claim": "auth_time"
+  },
+  "stepUpRequest": {
+    "acrValues": {
+      "LoA2": "urn:cognito:loa:4"
+    },
+    "maxAge": true,
+    "promptLogin": "never"
+  },
+  "challenge": {
+    "type": "rfc9470"
+  }
+}

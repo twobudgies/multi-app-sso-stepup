@@ -29,6 +29,13 @@ public sealed class StepUpRequest
     public Dictionary<string, string> AcrValues { get; set; } = new();
     public bool MaxAge { get; set; }
     public string PromptLogin { get; set; } = "never";
+    public string? ClaimsParam { get; set; }
+}
+
+public sealed class ChallengeRule
+{
+    public string Type { get; set; } = "rfc9470";
+    public string? AcrsValue { get; set; }
 }
 
 public sealed class Profile
@@ -39,6 +46,7 @@ public sealed class Profile
     public LevelRule Level { get; set; } = new();
     public AuthTimeRule AuthTime { get; set; } = new();
     public StepUpRequest StepUpRequest { get; set; } = new();
+    public ChallengeRule Challenge { get; set; } = new();
 
     static readonly JsonSerializerOptions Opts = new() { PropertyNameCaseInsensitive = true };
 
@@ -76,8 +84,10 @@ public sealed class Profile
             throw new InvalidOperationException("profile.level.map needs LoA1 and LoA2");
         if (Capabilities.EmitsAuthTime && string.IsNullOrEmpty(AuthTime.Claim))
             throw new InvalidOperationException("profile says it emits auth time but authTime.claim is empty");
-        if (!StepUpRequest.AcrValues.ContainsKey("LoA2") && !Capabilities.ClaimsParam)
+        if (!StepUpRequest.AcrValues.ContainsKey("LoA2") && !(Capabilities.ClaimsParam && !string.IsNullOrEmpty(StepUpRequest.ClaimsParam)))
             throw new InvalidOperationException("profile has no way to request LoA2");
+        if (Level.Map["LoA2"].Length == 0)
+            throw new InvalidOperationException("profile.level.map.LoA2 has no accepted values");
     }
 
     /// <summary>Policy safety check: a max-age rule cannot be enforced without an auth time claim.</summary>
@@ -130,12 +140,20 @@ public sealed class Profile
         if (Capabilities.AcrValues && StepUpRequest.AcrValues.TryGetValue(required.ToString(), out var acr)) p["acr_values"] = acr;
         if (Capabilities.MaxAge && StepUpRequest.MaxAge && maxAgeSeconds is int m) p["max_age"] = m.ToString();
         if (Capabilities.PromptLogin && StepUpRequest.PromptLogin == "always") p["prompt"] = "login";
+        if (Capabilities.ClaimsParam && !string.IsNullOrEmpty(StepUpRequest.ClaimsParam))
+            p["claims"] = StepUpRequest.ClaimsParam.Replace("{level}", Level.Map["LoA2"].FirstOrDefault() ?? "");
         return p;
     }
 
     /// <summary>RFC 9470 WWW-Authenticate header value.</summary>
     public string BuildChallenge(Level required, int? maxAgeSeconds)
     {
+        if (Challenge.Type == "entra-claims")
+        {
+            var claims = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(
+                "{\"access_token\":{\"acrs\":{\"essential\":true,\"value\":\"" + (Challenge.AcrsValue ?? Level.Map["LoA2"].FirstOrDefault() ?? "") + "\"}}}"));
+            return $"Bearer realm=\"\", error=\"insufficient_claims\", claims=\"{claims}\", cc_type=\"authcontext\"";
+        }
         var p = BuildStepUpParameters(required, maxAgeSeconds);
         var s = "Bearer error=\"insufficient_user_authentication\", error_description=\"A stronger or more recent authentication is required\"";
         foreach (var (k, v) in p) if (k is "acr_values" or "max_age") s += $", {k}=\"{v}\"";
