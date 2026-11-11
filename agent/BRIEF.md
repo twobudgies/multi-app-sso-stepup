@@ -19,7 +19,7 @@ State any assumption before relying on it and flag anything that needs the owner
 ## Non-goals
 - Production hardening, HA, user provisioning/SCIM.
 - Building our own MFA: the IdP performs MFA, apps request and verify it.
-- SAML (OIDC only).
+- SAML as the main protocol. Exception (owner request 2026-11-02): one extra app, `apps/saml`, uses SAML 2.0 (Phase 8). The other apps stay OIDC only.
 - Automated tests (see Decisions). Verification is by code review and manual steps.
 
 ## Constraints

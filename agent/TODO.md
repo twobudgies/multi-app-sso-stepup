@@ -98,6 +98,27 @@ Keep `T-FINAL` last (the presentation, Phase 7, comes right before it). New task
 - [x] P7-4: Write a one-page rehearsal guide: timing per slide, the 10 questions the team is most likely to ask with short answers
 - [x] GATE-P7: Phase 7 report, then stop
 
+## Phase 8: SAML 2.0 app (owner request 2026-11-02)
+Goal: a 4th app, ASP.NET Core MVC (C#), that signs in with **SAML 2.0** against the same Keycloak realm, with step-up, so the owner can see exactly what changes between OIDC and SAML.
+- [x] P8-1: Record the decision: BRIEF.md "SAML (OIDC only)" non-goal is lifted for this one app; add ADR-0006 (SAML app: library, why no shared-API tokens, step-up via RequestedAuthnContext + ForceAuthn)
+- [x] P8-2: Keycloak: add SAML client `app-saml` to `idp/keycloak/realm.json` (signed assertions, ACS + SLO URLs on port 5500, attribute mappers); no secrets
+- [x] P8-3: `apps/saml` ASP.NET Core MVC: SP-initiated SSO (ITfoxtec.Identity.Saml2), signature + audience + time checks, InResponseTo, server-side session, cookie flags
+- [x] P8-4: (done with a second SAML client, because Keycloak 26.0 ignores RequestedAuthnContext; window not shared with OIDC apps) Step-up in SAML: AuthnRequest with RequestedAuthnContext (LoA2) + ForceAuthn; read AuthnContextClassRef and AuthnInstant from the NEW assertion; enforce the 1-minute window server-side per action; failure paths (cancel, IdP ignores the request)
+- [x] P8-5: SAML logout (SP-initiated SLO) plus session panel, nav link from the three existing apps
+- [x] P8-6: Run it against live Keycloak (SSO from an OIDC app with no prompt, step-up, expiry, logout); record run vs only reviewed in `docs/manual-checks.md`
+- [x] P8-7: `docs/saml-vs-oidc.md`: plain-language "what changes" guide (terms map, flow diagram, step-up difference, files to read); README, repo map, `.env.example`, npm script `dev:saml`
+- [x] GATE-P8: Phase 8 report
+
+## Phase 9: Federated SSO by e-mail domain (owner request 2026-11-02, planned after Phase 8)
+Goal: users from specific partner/company domains (for example `@corp-a.example`) sign in at THEIR OWN identity provider; our Keycloak acts as the broker, so the apps still see one token/assertion from one IdP. Use placeholder domains in the repo (the repo will be public).
+- [ ] P9-0: Owner decision (2026-11-02): the real company IdP (Barco) is DROPPED; the partner IdP is an **Amazon Cognito user pool** with test users (owner-controlled, works from localhost, no outside approval). Any real partner can be added later by config only. Write `docs/partner-idp-onboarding.md`: (a) Cognito walkthrough step by step (user pool, app client with secret, hosted-UI domain, callback URL = our Keycloak broker endpoint, test users on a placeholder domain such as `@corp-a.example`, optional TOTP), (b) a short generic checklist and e-mail template for any future real partner (OIDC or SAML, metadata URL, client id/secret, URLs to register, claims, MFA signaling). Placeholders only, no real domains or pool ids
+- [ ] P9-1: Confirm with the owner: Cognito is OIDC; which placeholder domains map to it; unknown domains stay on local password login (recommended)
+- [ ] P9-2: Keycloak identity brokering: add one external IdP per domain (Cognito is the partner IdP; if the owner has no AWS account at hand, a second local Keycloak realm is the fallback); first-login user mapping and attribute mappers
+- [ ] P9-3: Home realm discovery: ask for the e-mail first, route by domain to the matching IdP (domain-to-IdP map in config, not hard-coded); unknown domains use the local login
+- [ ] P9-4: Step-up with a federated user: what `acr`/`auth_time`/AuthnContext does the partner IdP return, does the broker keep the level, what if the partner cannot do MFA (the "freshness problem" in `docs/idp-adapter.md`); reject unsafe combinations instead of skipping the check
+- [ ] P9-5: Verify with all four apps (React, Angular, MVC, SAML) and write `docs/federation.md` (plain-language, trust model, what the partner must provide: metadata, claims, MFA); record run vs reviewed
+- [ ] GATE-P9: Phase 9 report
+
 <!-- Keep this task LAST. New tasks go above it. -->
 - [!] T-FINAL: REMIND THE USER to make this repo public (currently private)
   - blocked: waiting for user (visibility is the owner's action; reminder delivered in the final report and docs/pre-publish-checklist.md)

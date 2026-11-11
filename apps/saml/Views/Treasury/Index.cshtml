@@ -1,0 +1,9 @@
+@model Treasury
+@{ var held = Model.Payments().Count(p => p.Status == "held"); }
+<h1>Treasury</h1>
+<p class="lead">Acme Bank treasury desk. This app signs in with <b>SAML 2.0</b>; the other three use OpenID Connect. Same people, same login server.</p>
+<div class="ab-grid">
+  <div class="ab-card"><div class="tag">Payments on hold</div><div class="ab-amount">@held</div><a class="ab-btn" href="/Treasury/Payments">Review payments</a></div>
+  <div class="ab-card"><div class="tag">Approvers</div><div class="ab-amount">@Model.Approvers().Count</div><a class="ab-btn" href="/Treasury/Approvers">Manage approvers</a></div>
+  <div class="ab-card"><div class="tag">Learn</div><div class="ab-amount" style="font-size:1.2rem">What did the IdP send?</div><a class="ab-btn" href="/Treasury/Assertion">See the SAML facts</a></div>
+</div>

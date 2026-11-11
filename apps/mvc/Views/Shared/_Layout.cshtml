@@ -18,6 +18,7 @@
     <a href="http://localhost:5300/">Customer Portal</a>
     <a href="http://localhost:5400/">Payments and Transfers</a>
     <a href="/" class="active">Back Office</a>
+    <a href="http://localhost:5500/">Treasury (SAML)</a>
   </nav>
   @if (User.Identity?.IsAuthenticated == true) {
     <form method="post" asp-controller="BackOffice" asp-action="SignOut"><button class="ab-btn">Sign out</button></form>

@@ -1,0 +1,14 @@
+@using System.Security.Claims
+<h1>What the identity provider told us</h1>
+<p class="lead">These are the facts from the signed SAML assertion. The app trusts them only because the signature checked out against the IdP's certificate.</p>
+<table class="ab-table">
+  <tr><th>Fact</th><th>Value</th><th>Plain meaning</th></tr>
+  <tr><td>NameID</td><td>@User.FindFirstValue(ClaimTypes.NameIdentifier)</td><td>Who the user is (like <code>sub</code> in OIDC)</td></tr>
+  <tr><td>Level the app derived</td><td>@User.FindFirstValue("acme_level")</td><td>LoA2 only if the signed <code>loa</code> attribute says 2 (Keycloak 26.0 does not fill AuthnContextClassRef)</td></tr>
+  <tr><td>AuthnContextClassRef</td><td>@User.FindFirstValue("acme_authn_context")</td><td>How strongly they logged in (like <code>acr</code>)</td></tr>
+  <tr><td>AuthnInstant</td><td>@(long.TryParse(User.FindFirstValue("acme_auth_instant"), out var t) ? DateTimeOffset.FromUnixTimeSeconds(t).ToString("u") : "")</td><td>When they logged in (like <code>auth_time</code>)</td></tr>
+  <tr><td>SessionIndex</td><td>@User.FindFirstValue("http://schemas.itfoxtec.com/ws/2014/02/identity/claims/saml2sessionindex")</td><td>Handle used for single logout</td></tr>
+  @foreach (var c in User.Claims.Where(c => !c.Type.StartsWith("acme_") && c.Type != ClaimTypes.NameIdentifier && c.Type != "acme_level" && !c.Type.Contains("sessionindex"))) {
+    <tr><td>attribute @c.Type</td><td>@c.Value</td><td>Profile data the IdP chose to release</td></tr>
+  }
+</table>

@@ -268,6 +268,175 @@
         "pkce.code.challenge.method": "S256"
       },
       "secret": "${APP_MVC_CLIENT_SECRET}"
+    },
+    {
+      "clientId": "urn:acme:treasury",
+      "name": "Treasury (SAML 2.0 MVC)",
+      "enabled": true,
+      "protocol": "saml",
+      "frontchannelLogout": true,
+      "redirectUris": [
+        "http://localhost:5500/*"
+      ],
+      "baseUrl": "http://localhost:5500/",
+      "attributes": {
+        "saml_assertion_consumer_url_post": "http://localhost:5500/saml/acs",
+        "saml_single_logout_service_url_post": "http://localhost:5500/saml/slo",
+        "saml_single_logout_service_url_redirect": "http://localhost:5500/saml/slo",
+        "saml.authnstatement": "true",
+        "saml.server.signature": "true",
+        "saml.assertion.signature": "true",
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml.client.signature": "false",
+        "saml.force.post.binding": "true",
+        "saml_name_id_format": "username",
+        "saml_force_name_id_format": "true",
+        "saml.encrypt": "false",
+        "post.logout.redirect.uris": "http://localhost:5500/*",
+        "acr.loa.map": "{\"urn:acme:loa:1\": 1, \"urn:acme:loa:2\": 2}"
+      },
+      "protocolMappers": [
+        {
+          "name": "username",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "username",
+            "attribute.name": "username",
+            "friendly.name": "username",
+            "attribute.nameformat": "Basic"
+          }
+        },
+        {
+          "name": "email",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "email",
+            "attribute.name": "email",
+            "friendly.name": "email",
+            "attribute.nameformat": "Basic"
+          }
+        },
+        {
+          "name": "firstName",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "firstName",
+            "attribute.name": "firstName",
+            "friendly.name": "firstName",
+            "attribute.nameformat": "Basic"
+          }
+        },
+        {
+          "name": "lastName",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "lastName",
+            "attribute.name": "lastName",
+            "friendly.name": "lastName",
+            "attribute.nameformat": "Basic"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "urn:acme:treasury:stepup",
+      "name": "Treasury (SAML 2.0 MVC), step-up entity",
+      "enabled": true,
+      "protocol": "saml",
+      "frontchannelLogout": true,
+      "redirectUris": [
+        "http://localhost:5500/*"
+      ],
+      "baseUrl": "http://localhost:5500/",
+      "attributes": {
+        "saml_assertion_consumer_url_post": "http://localhost:5500/saml/acs",
+        "saml_single_logout_service_url_post": "http://localhost:5500/saml/slo",
+        "saml_single_logout_service_url_redirect": "http://localhost:5500/saml/slo",
+        "saml.authnstatement": "true",
+        "saml.server.signature": "true",
+        "saml.assertion.signature": "true",
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml.client.signature": "false",
+        "saml.force.post.binding": "true",
+        "saml_name_id_format": "username",
+        "saml_force_name_id_format": "true",
+        "saml.encrypt": "false",
+        "post.logout.redirect.uris": "http://localhost:5500/*",
+        "acr.loa.map": "{\"urn:acme:loa:1\": 1, \"urn:acme:loa:2\": 2}"
+      },
+      "protocolMappers": [
+        {
+          "name": "username",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "username",
+            "attribute.name": "username",
+            "friendly.name": "username",
+            "attribute.nameformat": "Basic"
+          }
+        },
+        {
+          "name": "email",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "email",
+            "attribute.name": "email",
+            "friendly.name": "email",
+            "attribute.nameformat": "Basic"
+          }
+        },
+        {
+          "name": "firstName",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "firstName",
+            "attribute.name": "firstName",
+            "friendly.name": "firstName",
+            "attribute.nameformat": "Basic"
+          }
+        },
+        {
+          "name": "lastName",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "lastName",
+            "attribute.name": "lastName",
+            "friendly.name": "lastName",
+            "attribute.nameformat": "Basic"
+          }
+        },
+        {
+          "name": "loa",
+          "protocol": "saml",
+          "protocolMapper": "saml-hardcode-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "attribute.name": "loa",
+            "attribute.value": "2",
+            "attribute.nameformat": "Basic",
+            "friendly.name": "loa"
+          }
+        }
+      ],
+      "authenticationFlowBindingOverrides": {
+        "browser": "5a1c0de0-5a31-4e00-9000-000000000001"
+      }
     }
   ],
   "authenticationFlows": [
@@ -355,6 +524,30 @@
           "requirement": "REQUIRED",
           "priority": 20,
           "userSetupAllowed": false
+        }
+      ]
+    },
+    {
+      "id": "5a1c0de0-5a31-4e00-9000-000000000001",
+      "alias": "saml-stepup-always-mfa",
+      "description": "For the SAML step-up entity only: always password + TOTP (Keycloak 26.0 ignores RequestedAuthnContext, so the entity itself means LoA2)",
+      "providerId": "basic-flow",
+      "topLevel": true,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-username-password-form",
+          "requirement": "REQUIRED",
+          "priority": 10,
+          "userSetupAllowed": false,
+          "autheticatorFlow": false
+        },
+        {
+          "authenticator": "auth-otp-form",
+          "requirement": "REQUIRED",
+          "priority": 20,
+          "userSetupAllowed": false,
+          "autheticatorFlow": false
         }
       ]
     }
