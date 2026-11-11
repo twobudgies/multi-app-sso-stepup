@@ -1,0 +1,8 @@
+@model Treasury
+<h1>Approvers</h1>
+<p class="lead">People allowed to approve payments: @string.Join(", ", Model.Approvers())</p>
+<div class="ab-card" style="max-width:520px">
+  <h2>Add approver <span class="ab-sensitive-tag">NEEDS STEP-UP</span></h2>
+  <form method="post" asp-action="AddApprover"><label class="ab-field">User name<input name="name" maxlength="40" required /></label>
+  <button class="ab-btn primary">Add approver</button></form>
+</div>

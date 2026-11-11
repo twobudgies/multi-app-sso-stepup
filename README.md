@@ -27,6 +27,7 @@ To re-record it with the stack running: `npm --prefix tools/e2e install && npm -
 | `apps/react` | Customer Portal (React SPA) | 5300 | built |
 | `apps/angular` | Payments and Transfers (Angular SPA) | 5400 | built |
 | `apps/mvc` | Back Office (ASP.NET Core MVC) | 5200 | built |
+| `apps/saml` | Treasury (ASP.NET Core MVC, **SAML 2.0** sign-in, own step-up check) | 5500 | built, see [docs/saml-vs-oidc.md](docs/saml-vs-oidc.md) |
 | `api/` | Shared ASP.NET Core API, enforces step-up | 5100 | built |
 | `packages/` | Shared code: `idp-profile` (TS loader), `dotnet/IdpProfile` (C# loader and evaluator), `ui-tokens` (Acme Bank look) | - | built |
 | `idp/` | Keycloak realm and IdP profiles | 8180 | built |

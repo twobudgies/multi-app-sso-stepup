@@ -1,5 +1,6 @@
 [
   { "id": "customer-portal", "name": "Customer Portal", "url": "http://localhost:5300/" },
   { "id": "payments", "name": "Payments and Transfers", "url": "http://localhost:5400/" },
-  { "id": "back-office", "name": "Back Office", "url": "http://localhost:5200/" }
+  { "id": "back-office", "name": "Back Office", "url": "http://localhost:5200/" },
+  { "id": "treasury", "name": "Treasury (SAML)", "url": "http://localhost:5500/" }
 ]
